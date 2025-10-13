@@ -231,26 +231,26 @@ rm results/01_filtered_bams/*qc_bl_filt.bam
 
 
 !!! tip "Bonus Task"
-**Taks 5: Convert .bam file into .bigwig format**
+    **Taks 5: Convert .bam file into .bigwig format**
 
-In order to visualise ATAC-seq coverage, you can convert .bam files into .bigwig format, used to represent coverage tracks in genome browsers like IGV.  
-A tool that allows you to do this conversion is [`deeptools bamCoverage`](https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html)
+    In order to visualise ATAC-seq coverage, you can convert .bam files into .bigwig format, used to represent coverage tracks in genome browsers like IGV.  
+    A tool that allows you to do this conversion is [`deeptools bamCoverage`](https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html)
 
-Next, convert the sorted and filterd .bams into .bigwigs
-
-
-```{bash}
-mkdir results/01_filtered_bams/filt_bigwigs
-for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-    echo "Processing file: $bam"
-    sample_name=$(basename "$bam" .qc_bl_filt.sorted.bam) 
-    bamCoverage -b $bam -o results/01_filtered_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
-done
-```
+    Next, convert the sorted and filterd .bams into .bigwigs
 
 
-Download the .bigwigs and load them into IGV. 
-Remember to use mm10 genome.  
+    ```{bash}
+    mkdir results/01_filtered_bams/filt_bigwigs
+    for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
+        echo "Processing file: $bam"
+        sample_name=$(basename "$bam" .qc_bl_filt.sorted.bam) 
+        bamCoverage -b $bam -o results/01_filtered_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
+    done
+    ```
 
-Look into Asns gene, which tissue has higher DNA accessibility? 
+
+    Download the .bigwigs and load them into IGV. 
+    Remember to use mm10 genome.  
+
+    Look into Asns gene, which tissue has higher DNA accessibility? 
 

@@ -12,7 +12,8 @@ We will compare peak calling results using:
 - Understand nucleosome-free vs. nucleosome-associated fragments
 - Use MACS3 for peak calling with different fragment size filters
 - Compare peak calling results from different approaches
-- Learn about ATAC-seq specific peak caller HMMRATAC
+- Learn about ATAC-seq specific peak caller HMMRATAC  
+
 
 ## 1. Fragment size filtering
 
@@ -21,31 +22,25 @@ Before calling peaks with MACS3, we will separate fragments based on their size:
 - **Nucleosome-free (NF) fragments** (< 100 bp): Represent open chromatin regions
 - **Nucleosome-associated fragments** (> 100 bp): Represent regions with positioned nucleosomes
 
-We can do that using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) as we have seen in previous exercises. 
-
 
 **Task 1: Filter for nucleosome-free (NF) fragments**
 
-- Create output directory: `results/01_filtered_bams/NF_bams`
-- Using `samtool view` Filter BAM files to keep only fragments with length 1-100 bp  
-- Save filtered files as: `results/01_filtered_bams/NF_bams/${sample_name}_NF.bam`
-- Maintain BAM file headers during filtering
-
-!!! note 
-    In SAM format, column 9 is described as "TLEN: signed observed Template LENgth", which corresponds to the insert size length.
+We can do that using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) as we have seen in previous exercises, and filter reads based on fragment length.  
 
 
-??? info "Hint"
-    Use `samtools view` with `awk` commands to filter reads:
-    
-    - Filter column 9 (TLEN) using awk: `($9>= 1 && $9<=100) || ($9<=-1 && $9>=-100)`
-    - Keep header lines with `-h`
-    - Pipe to `samtools view -b` for BAM output
+- Which column from the .bam file contains fragment length information?  
+
+??? info "Answer"
+    In SAM format, column 9 is described as "TLEN: signed observed Template LENgth", which corresponds to the insert size length. 
+
+With the following code, you will:  
+- Create output directory: `results/01_filtered_bams/NF_bams`.  
+- Use `samtool view` to filter BAM files to keep only fragments with length 1-100 bp.    
+- Save filtered files as: `results/01_filtered_bams/NF_bams/${sample_name}_NF.bam`.  
+- Maintain BAM file headers during filtering.  
 
 
-
-??? success "Solution"
-
+!!! info "Code"
     ```{bash}
     # create new directory for peaks
     mkdir -p results/01_filtered_bams/NF_bams
@@ -185,29 +180,23 @@ We will use the filtered BAM files (all fragments) for this analysis.
 
 ## 3. Compare Peak Calling Results
 
-### 3.1 Visualise peaks 
+Now let's visualise and compare the different peak calling results using the Integrative Genomics Viewer (IGV) to understand how each method performs.
 
 **Task 5: Load traks into IGV** 
-
-## 3. Visualize Peak Calling Results in IGV
-
-### Task 5: Compare Peak Calling Methods Using IGV
-
-Now we will visualize and compare the different peak calling results using the Integrative Genomics Viewer (IGV) to understand how each method performs.
-
-**What you will load:**
 
 For **Cerebrum_rep1** sample, download and load the following files in IGV:
 
 #### Peak Files:
 - MACS3 NF peaks: `results/03_peak_calling/NF_peaks/NF_peaks_Cerebrum_rep1/Cerebrum_rep1_NF_peaks.narrowPeak`
 - MACS3 all peaks: `results/03_peak_calling/all_peaks/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak`
-- HMMRATAC peaks: `results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_Cerebrum_rep1/Cerebrum_rep1_hmmratac_accessible_regions.narrowPeak` *(if you completed the bonus task)*
+- HMMRATAC peaks: `results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_Cerebrum_rep1/Cerebrum_rep1_hmmratac_accessible_regions.narrowPeak` *(if you completed the bonus task, if you didn't and you are curious, you will find the files in `/data/Solutions/`)*
 
 #### BAM Files for Read Coverage:
 - All fragments BAM: `results/01_filtered_bams/Cerebrum_rep1.qc_bl_filt.sorted.bam`
 - Nucleosome-free fragments BAM: `results/01_filtered_bams/NF_bams/Cerebrum_rep1_NF.sorted.bam`
 
+**Task 6: Compare results**  
 
-Do you observe big differences between methods? which method would work better to study TF binding sites? and for DA analysis? 
-Can you find an example of a gene where the nucleosomal pattern at TSS can be percieved? 
+- Do you observe big differences between methods?  
+- Which method would work better to study TF binding sites? and for DA analysis?   
+- Can you find an example of a gene where the nucleosomal pattern at TSS can be percieved?  

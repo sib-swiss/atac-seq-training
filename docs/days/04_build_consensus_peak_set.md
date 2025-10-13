@@ -41,21 +41,21 @@ Find peaks that are present in both replicates within each condition:
     path_peaks="results/03_peak_calling/all_peaks"
 
     # Intersect Kidney replicates (run twice to get all overlaps)
-    bedtools intersect -wa -a $path_peaks/all_peaks_Kidney_rep1/NA_peaks.narrowPeak \
-                          -b $path_peaks/all_peaks_Kidney_rep2/NA_peaks.narrowPeak \
+    bedtools intersect -wa -a $path_peaks/all_peaks_Kidney_rep1/Kidney_rep1_all_peaks.narrowPeak \
+                          -b $path_peaks/all_peaks_Kidney_rep2/Kidney_rep2_all_peaks.narrowPeak \
                           -f 0.25 -r > results/04_consensus_peaks/Kidney_intersect.bed
     
-    bedtools intersect -wa -b $path_peaks/all_peaks_Kidney_rep1/NA_peaks.narrowPeak \
-                          -a $path_peaks/all_peaks_Kidney_rep2/NA_peaks.narrowPeak \
+    bedtools intersect -wa -b $path_peaks/all_peaks_Kidney_rep1/Kidney_rep1_all_peaks.narrowPeak \
+                          -a $path_peaks/all_peaks_Kidney_rep2/Kidney_rep2_all_peaks.narrowPeak \
                           -f 0.25 -r >> results/04_consensus_peaks/Kidney_intersect.bed
 
     # Intersect Cerebrum replicates (run twice to get all overlaps)
-    bedtools intersect -wa -a $path_peaks/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak \
-                          -b $path_peaks/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak \
+    bedtools intersect -wa -a $path_peaks/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak \
+                          -b $path_peaks/all_peaks_Cerebrum_rep2/Cerebrum_rep2_all_peaks.narrowPeak \
                           -f 0.25 -r > results/04_consensus_peaks/Cerebrum_intersect.bed
     
-    bedtools intersect -wa -b $path_peaks/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak \
-                          -a $path_peaks/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak \
+    bedtools intersect -wa -b $path_peaks/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak \
+                          -a $path_peaks/all_peaks_Cerebrum_rep2/Cerebrum_rep2_all_peaks.narrowPeak \
                           -f 0.25 -r >> results/04_consensus_peaks/Cerebrum_intersect.bed
 
     # Check file format
