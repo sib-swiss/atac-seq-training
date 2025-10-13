@@ -9,6 +9,7 @@ nav:
       - 01 Filter bam files : days/01_filter_bam_files.md  
       - 02 QC post alignment : days/02_QC_post_alignment.md
       - 03 Peak calling : days/03_peak_calling.md
+    - Day2:
       - 04 Build consensus peak set : days/04_build_consensus_peak_set.md
       - 05 Quantify peaks : days/05_quantify_peaks.md
       - 06 Differential accessibility analysis : days/06_differential_accessibility_analysis.md
@@ -20,8 +21,8 @@ theme:
   favicon: assets/images/SIB_logo.svg
 
 # Repository
-repo_name: sib-swiss/gh-pages-training
-repo_url: https://github.com/sib-swiss/gh-pages-training
+repo_name: sib-swiss/atac-seq-training
+repo_url: https://github.com/sib-swiss/atac-seq-training/tree/main 
 
 markdown_extensions:
   - abbr
