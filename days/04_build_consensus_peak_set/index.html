@@ -742,21 +742,21 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>results/04_consensus_peak
 <span class="nv">path_peaks</span><span class="o">=</span><span class="s2">&quot;results/03_peak_calling/all_peaks&quot;</span>
 
 <span class="c1"># Intersect Kidney replicates (run twice to get all overlaps)</span>
-bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
-<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/Kidney_rep1_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/Kidney_rep2_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
 <span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/Kidney_intersect.bed
 
-bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
-<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/Kidney_rep1_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/Kidney_rep2_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
 <span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;&gt;<span class="w"> </span>results/04_consensus_peaks/Kidney_intersect.bed
 
 <span class="c1"># Intersect Cerebrum replicates (run twice to get all overlaps)</span>
-bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
-<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/Cerebrum_rep2_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
 <span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
 
-bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
-<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/Cerebrum_rep2_all_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
 <span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;&gt;<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
 
 <span class="c1"># Check file format</span>

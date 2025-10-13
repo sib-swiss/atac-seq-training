@@ -543,40 +543,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#31-visualise-peaks" class="md-nav__link">
-    <span class="md-ellipsis">
-      3.1 Visualise peaks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-visualize-peak-calling-results-in-igv" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Visualize Peak Calling Results in IGV
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Visualize Peak Calling Results in IGV">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task-5-compare-peak-calling-methods-using-igv" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task 5: Compare Peak Calling Methods Using IGV
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Task 5: Compare Peak Calling Methods Using IGV">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#peak-files" class="md-nav__link">
     <span class="md-ellipsis">
       Peak Files:
@@ -591,11 +557,6 @@
       BAM Files for Read Coverage:
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -884,40 +845,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#31-visualise-peaks" class="md-nav__link">
-    <span class="md-ellipsis">
-      3.1 Visualise peaks
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-visualize-peak-calling-results-in-igv" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Visualize Peak Calling Results in IGV
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. Visualize Peak Calling Results in IGV">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#task-5-compare-peak-calling-methods-using-igv" class="md-nav__link">
-    <span class="md-ellipsis">
-      Task 5: Compare Peak Calling Methods Using IGV
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Task 5: Compare Peak Calling Methods Using IGV">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#peak-files" class="md-nav__link">
     <span class="md-ellipsis">
       Peak Files:
@@ -932,11 +859,6 @@
       BAM Files for Read Coverage:
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -976,7 +898,7 @@
 <li>Understand nucleosome-free vs. nucleosome-associated fragments</li>
 <li>Use MACS3 for peak calling with different fragment size filters</li>
 <li>Compare peak calling results from different approaches</li>
-<li>Learn about ATAC-seq specific peak caller HMMRATAC</li>
+<li>Learn about ATAC-seq specific peak caller HMMRATAC  </li>
 </ul>
 <h2 id="1-fragment-size-filtering">1. Fragment size filtering</h2>
 <p>Before calling peaks with MACS3, we will separate fragments based on their size:</p>
@@ -984,29 +906,22 @@
 <li><strong>Nucleosome-free (NF) fragments</strong> (&lt; 100 bp): Represent open chromatin regions</li>
 <li><strong>Nucleosome-associated fragments</strong> (&gt; 100 bp): Represent regions with positioned nucleosomes</li>
 </ul>
-<p>We can do that using <a href="https://www.htslib.org/doc/samtools-view.html"><code>samtools view</code></a> as we have seen in previous exercises. </p>
 <p><strong>Task 1: Filter for nucleosome-free (NF) fragments</strong></p>
+<p>We can do that using <a href="https://www.htslib.org/doc/samtools-view.html"><code>samtools view</code></a> as we have seen in previous exercises, and filter reads based on fragment length.  </p>
 <ul>
-<li>Create output directory: <code>results/01_filtered_bams/NF_bams</code></li>
-<li>Using <code>samtool view</code> Filter BAM files to keep only fragments with length 1-100 bp  </li>
-<li>Save filtered files as: <code>results/01_filtered_bams/NF_bams/${sample_name}_NF.bam</code></li>
-<li>Maintain BAM file headers during filtering</li>
+<li>Which column from the .bam file contains fragment length information?  </li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In SAM format, column 9 is described as &ldquo;TLEN: signed observed Template LENgth&rdquo;, which corresponds to the insert size length.</p>
-</div>
 <details class="info">
-<summary>Hint</summary>
-<p>Use <code>samtools view</code> with <code>awk</code> commands to filter reads:</p>
-<ul>
-<li>Filter column 9 (TLEN) using awk: <code>($9&gt;= 1 &amp;&amp; $9&lt;=100) || ($9&lt;=-1 &amp;&amp; $9&gt;=-100)</code></li>
-<li>Keep header lines with <code>-h</code></li>
-<li>Pipe to <code>samtools view -b</code> for BAM output</li>
-</ul>
+<summary>Answer</summary>
+<p>In SAM format, column 9 is described as &ldquo;TLEN: signed observed Template LENgth&rdquo;, which corresponds to the insert size length. </p>
 </details>
-<details class="success">
-<summary>Solution</summary>
+<p>With the following code, you will:<br />
+- Create output directory: <code>results/01_filtered_bams/NF_bams</code>.<br />
+- Use <code>samtool view</code> to filter BAM files to keep only fragments with length 1-100 bp.  <br />
+- Save filtered files as: <code>results/01_filtered_bams/NF_bams/${sample_name}_NF.bam</code>.<br />
+- Maintain BAM file headers during filtering.  </p>
+<div class="admonition info">
+<p class="admonition-title">Code</p>
 <div class="highlight"><pre><span></span><code># create new directory for peaks
 mkdir -p results/01_filtered_bams/NF_bams
 
@@ -1024,7 +939,7 @@ done
 - <code>-b</code>: Output in BAM format<br />
 - <code>$9</code>: Insert size (TLEN field in SAM format)<br />
 - <strong>Filter logic</strong>: Keep fragments with insert size between 1 and 100bp (nucleosome-free regions)</p>
-</details>
+</div>
 <p><strong>Task 2: sort and index BAM files</strong></p>
 <ul>
 <li>Sort and index the bams files for next step</li>
@@ -1121,26 +1036,26 @@ Parameters explanation:<br />
 </details>
 </div>
 <h2 id="3-compare-peak-calling-results">3. Compare Peak Calling Results</h2>
-<h3 id="31-visualise-peaks">3.1 Visualise peaks</h3>
+<p>Now let&rsquo;s visualise and compare the different peak calling results using the Integrative Genomics Viewer (IGV) to understand how each method performs.</p>
 <p><strong>Task 5: Load traks into IGV</strong> </p>
-<h2 id="3-visualize-peak-calling-results-in-igv">3. Visualize Peak Calling Results in IGV</h2>
-<h3 id="task-5-compare-peak-calling-methods-using-igv">Task 5: Compare Peak Calling Methods Using IGV</h3>
-<p>Now we will visualize and compare the different peak calling results using the Integrative Genomics Viewer (IGV) to understand how each method performs.</p>
-<p><strong>What you will load:</strong></p>
 <p>For <strong>Cerebrum_rep1</strong> sample, download and load the following files in IGV:</p>
 <h4 id="peak-files">Peak Files:</h4>
 <ul>
 <li>MACS3 NF peaks: <code>results/03_peak_calling/NF_peaks/NF_peaks_Cerebrum_rep1/Cerebrum_rep1_NF_peaks.narrowPeak</code></li>
 <li>MACS3 all peaks: <code>results/03_peak_calling/all_peaks/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak</code></li>
-<li>HMMRATAC peaks: <code>results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_Cerebrum_rep1/Cerebrum_rep1_hmmratac_accessible_regions.narrowPeak</code> <em>(if you completed the bonus task)</em></li>
+<li>HMMRATAC peaks: <code>results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_Cerebrum_rep1/Cerebrum_rep1_hmmratac_accessible_regions.narrowPeak</code> <em>(if you completed the bonus task, if you didn&rsquo;t and you are curious, you will find the files in <code>/data/Solutions/</code>)</em></li>
 </ul>
 <h4 id="bam-files-for-read-coverage">BAM Files for Read Coverage:</h4>
 <ul>
 <li>All fragments BAM: <code>results/01_filtered_bams/Cerebrum_rep1.qc_bl_filt.sorted.bam</code></li>
 <li>Nucleosome-free fragments BAM: <code>results/01_filtered_bams/NF_bams/Cerebrum_rep1_NF.sorted.bam</code></li>
 </ul>
-<p>Do you observe big differences between methods? which method would work better to study TF binding sites? and for DA analysis? 
-Can you find an example of a gene where the nucleosomal pattern at TSS can be percieved? </p>
+<p><strong>Task 6: Compare results</strong>  </p>
+<ul>
+<li>Do you observe big differences between methods?  </li>
+<li>Which method would work better to study TF binding sites? and for DA analysis?   </li>
+<li>Can you find an example of a gene where the nucleosomal pattern at TSS can be percieved?  </li>
+</ul>
 
 
 
