@@ -1,0 +1,996 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/SIB_logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Exercises - Introduction to NGS ATAC-seq data analysis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#material" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Introduction to NGS ATAC-seq data analysis" class="md-header__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Introduction to NGS ATAC-seq data analysis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Exercises
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Introduction to NGS ATAC-seq data analysis" class="md-nav__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    Introduction to NGS ATAC-seq data analysis
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../precourse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precourse preparations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course_schedule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Course schedule
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Day1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Day1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/00_connect_to_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    00 Connect to server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/01_filter_bam_files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    01 Filter bam files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/02_QC_post_alignment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    02 QC post alignment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/03_peak_calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    03 Peak calling
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/04_build_consensus_peak_set/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    04 Build consensus peak set
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/05_quantify_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    05 Quantify peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/06_differential_accessibility_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    06 Differential accessibility analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../days/07_annotate_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    07 Annotate peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#material" class="md-nav__link">
+    <span class="md-ellipsis">
+      Material
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forking-and-cloning-the-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forking and cloning the template
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#serving-a-website-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      Serving a website locally
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      The file structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-the-website-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up the website infrastructure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referring-to-the-right-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referring to the right repo
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#markdown-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Markdown syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Markdown syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#my-markdown-exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      My markdown exercise
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-features-of-mkdocs-material" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional features of Mkdocs material
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#byo-workshop" class="md-nav__link">
+    <span class="md-ellipsis">
+      BYO workshop
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#host-the-website-at-githubio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Host the website at github.io
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pushing-to-a-remote-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pushing to a remote repository
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Exercises</h1>
+
+<h2 id="material">Material</h2>
+<p><a class="md-button" href="../assets/pdf/introduction_gh_pages.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 28.7 28.7 0 64 0h160v128c0 17.7 14.3 32 32 32h128v144H176c-35.3 0-64 28.7-64 64v144H64c-35.3 0-64-28.7-64-64zm384 64H256V0zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56h-16v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V368c0-8.8 7.2-16 16-16m32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24h-16v48zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48h-32c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16m32 128c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16h-16v96zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16h-32v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16h-32v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V368"/></svg></span> Download the presentation</a></p>
+<ul>
+<li><a href="https://www.mkdocs.org/">Mkdocs Website</a></li>
+<li><a href="https://squidfunk.github.io/mkdocs-material/">Mkdocs material website</a></li>
+<li><a href="https://github.com/sib-swiss/course_website_template">Course website template on github</a></li>
+</ul>
+<h2 id="forking-and-cloning-the-template">Forking and cloning the template</h2>
+<p>Go to <a href="https://github.com/sib-swiss/course_website_template">https://github.com/sib-swiss/course_website_template</a>, and click on <strong>Use this template</strong>:</p>
+<figure>
+  <img src="../assets/images/use_this_as_template.png" width="500"/>
+</figure>
+
+<p>Choose the namespace in which you want to use the website template, choose a name, and initiate the new repository by finalising with <strong>Create repository from template</strong>:</p>
+<figure>
+  <img src="../assets/images/choose_owner.png" width="500"/>
+</figure>
+
+<p>Now you can find the new repository at <code>https://github.com/[NAMESPACE]/[REPONAME]</code>. In order to clone the repository to a local directory, click on <strong>Code</strong> and copy the github address that you can use for cloning to your clipboard:</p>
+<figure>
+  <img src="../assets/images/clone_repo.png" width="500"/>
+</figure>
+
+<p>After that, you open a terminal (e.g. Windows Powershell or your favourite terminal) <code>cd</code> to a directory you want to clone your repository in (e.g. to <code>C:\Users\myname\Documents</code>) and type:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/<span class="o">[</span>NAMESPACE<span class="o">]</span>/<span class="o">[</span>REPONAME<span class="o">]</span>.git<span class="w"> </span><span class="c1"># the last part can be pasted from github</span>
+</code></pre></div>
+<h2 id="serving-a-website-locally">Serving a website locally</h2>
+<p>In order to work on your website, it is convenient if you can serve it locally and directly see the effects of your work. In order to do that use the terminal to go into the repository directory, (e.g. <code>C:\Users\myname\Documents\reponame</code>) and type:</p>
+<div class="highlight"><pre><span></span><code>mkdocs<span class="w"> </span>serve
+</code></pre></div>
+<p>Now type <code>http://localhost:8000</code> in your favourite browser, and your website should be visible.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The website already contains content. Of course, it is up to you whether you want to keep it. In any way, you can use it as an example on how to use markdown. </p>
+</div>
+<p>Open the file <code>index.md</code> from the directory <code>docs</code> in your favourite text editor. Add some text to the page (e.g. <code>hello world!</code>) and save the file. See whether your changes are passed to the locally served website.</p>
+<div class="admonition note">
+<p class="admonition-title">Stopping <code>mkdocs serve</code></p>
+<p>After you have finished working on your website you will have to stop the serving process. Otherwise, it will continue in the background and keep port 8000 (and CPU) occupied. Stop the serving process with <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd>C</kbd></span> .</p>
+</div>
+<h2 id="the-file-structure">The file structure</h2>
+<p>The total file structure of the template looks like this:</p>
+<div class="highlight"><pre><span></span><code>.
+├── LICENCE
+├── README.md
+├── docs
+│   ├── assets
+│   │   └── images
+│   │       ├── SIB_logo.svg
+│   │       ├── reactions_zoom.png
+│   │       ├── reply_in_thread.png
+│   │       └── zoom_icons.png
+│   ├── course_schedule.md
+│   ├── exercises.md
+│   ├── index.md
+│   ├── precourse.md
+│   └── stylesheets
+│       └── extra.css
+└── mkdocs.yml
+
+4 directories, 12 files
+</code></pre></div>
+<p>The main directory contains:</p>
+<ul>
+<li><code>LICENCE</code>: a licence file (in this case cc-by-4.0)</li>
+<li><code>README.md</code>: the readme displayed at the github repository</li>
+<li><code>docs</code>: a directory with all website content, including:<ul>
+<li><code>assets</code>: a directory everything that is not directly rendered (e.g. images, pdfs)</li>
+<li>files ending with <code>*.md</code>: the actual markdown files that are rendered into html</li>
+<li><code>stylesheets</code>: a directory with <code>.css</code> file(s) for defining the website style format</li>
+</ul>
+</li>
+<li><code>mkdocs.yml</code>: a YAML file that is used by <code>mkdocs</code> in which you specify:<ul>
+<li>Website structure</li>
+<li>Meta information</li>
+<li>Plugins</li>
+</ul>
+</li>
+</ul>
+<h2 id="setting-up-the-website-infrastructure">Setting up the website infrastructure</h2>
+<p>Open <code>mkdocs.yml</code> in your favourite text editor. Have a look at the first part:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">site_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Course template</span>
+
+<span class="nt">nav</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Precourse preparations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">precourse.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Course schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">course_schedule.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Exercises</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exercises.md</span>
+</code></pre></div>
+<p>The first line (<code>site_name</code>) let&rsquo;s you change website name. Change it to something that makes sense to you, and check whether it has changed in the locally hosted site.</p>
+<p>With the part named <code>nav</code>, you can change the website structure and with that navigation. The file <code>index.md</code> should always be there, this is the &lsquo;homepage&rsquo;.</p>
+<p>Now we will generate a new page that is a subchapter of <em>Exercises</em>. In order to do so, follow the following steps:</p>
+<ul>
+<li>Generate a directory within the directory <code>docs</code> called <code>exercises</code></li>
+<li>Within the <code>exercises</code> directory generate a new file called <code>exercises_day1.md</code></li>
+<li>Adjust the <code>nav</code> part of <code>mkdocs.yml</code> like so:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">nav</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Home</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Precourse preparations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">precourse.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Course schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">course_schedule.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Exercises</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Day 1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exercises/exercises_day1.md</span>
+</code></pre></div>
+<p>Now a new collapsible menu will appear, containing your new page.</p>
+<h2 id="referring-to-the-right-repo">Referring to the right repo</h2>
+<p>In <code>mkdocs.yml</code> have a look at the repository part:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Repository</span>
+<span class="nt">repo_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sib-swiss/course_website_template</span>
+<span class="nt">repo_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/sib-swiss/course_website_template</span>
+</code></pre></div>
+<p>The course website is now hosted at your own repository. Therefore, change the repository name and url according to your own.</p>
+<h2 id="markdown-syntax">Markdown syntax</h2>
+<p>You can use general github markdown syntax in order to generate a formatted html page. Have a look <a href="https://guides.github.com/features/mastering-markdown/">here</a>.</p>
+<p>Now, convert the rendered text below into markdown. Add your markdown text to the file <code>exercises_day1.md</code> and see whether you get the expected result while you type.</p>
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Rendered markdown</label><div class="tabbed-content">
+<h3 id="my-markdown-exercise">My markdown exercise</h3>
+<p>With plain markdown you can highlight in two ways:</p>
+<ol>
+<li><em>Italic</em></li>
+<li><strong>Bold</strong></li>
+</ol>
+<p>You can add a link to your favourite <a href="https://www.sib.swiss/">website</a>. Or add an image from that website (find it at <code>https://www.sib.swiss/images/banners/banner_research_infrastructure.jpg</code>):</p>
+<p><img alt="" src="https://www.sib.swiss/images/banners/banner_research_infrastructure.jpg" /></p>
+<p>You can also add a local image (this one is stored in <code>../assets/images/zoom_icons.png</code>):</p>
+<p><img alt="" src="../assets/images/zoom_icons.png" /></p>
+<p>Sharing a code is easy, inline you refer to code like this: <code>pip install mkdocs</code>. But often it&rsquo;s more convenient in a code block, e.g. with shell highlighting:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">FILE</span><span class="o">=</span>my_genes.csv
+cat<span class="w"> </span><span class="nv">$FILE</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span>,2<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;,&#39;</span>
+</code></pre></div>
+<p>Or with R highlighting for example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&#39;my_genes.csv&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Answer</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="gu">### My markdown exercise</span>
+
+With plain markdown you can highlight in two ways:
+
+<span class="k">1.</span> <span class="ge">*Italic*</span>
+<span class="k">2.</span> <span class="gs">**Bold**</span>
+
+You can add a link to your favourite [<span class="nt">website</span>](<span class="na">https://www.sib.swiss/</span>).
+Or add an image from that website (find it at <span class="sb">`https://www.sib.swiss/images/banners/banner_research_infrastructure.jpg`</span>):
+
+![](https://www.sib.swiss/images/banners/banner_research_infrastructure.jpg)
+
+You can also add a local image (this one is stored in <span class="sb">`../assets/images/zoom_icons.png`</span>):
+
+![](../assets/images/zoom_icons.png)
+
+Sharing a code is easy, inline you refer to code like this: <span class="sb">`pip install mkdocs`</span>.
+But often it&#39;s more convenient in a code block, e.g. with shell highlighting:
+
+<span class="sb">```sh</span>
+<span class="nv">FILE</span><span class="o">=</span>my_genes.csv
+cat<span class="w"> </span><span class="nv">$FILE</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span>,2<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;,&#39;</span>
+<span class="sb">```</span>
+
+Or with R highlighting for example:
+
+<span class="sb">```r</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&#39;my_genes.csv&#39;</span><span class="p">)</span>
+<span class="sb">```</span>
+</code></pre></div>
+</div>
+</div>
+<h2 id="additional-features-of-mkdocs-material">Additional features of Mkdocs material</h2>
+<p>Some additional features are very convenient for generating a website for teaching. For example <a href="https://squidfunk.github.io/mkdocs-material/reference/admonitions/">admonitions</a>:</p>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>!!! warning
+    Do not overcommit the server!
+</code></pre></div>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">output</label><div class="tabbed-content">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not overcommit the server!</p>
+</div>
+</div>
+</div>
+<p>Also very convenient can be <a href="https://squidfunk.github.io/mkdocs-material/reference/content-tabs/">content tabs</a>:</p>
+<p><em>code:</em></p>
+<div class="highlight"><pre><span></span><code>=== &quot;R&quot;
+    Generating a vector of integers:
+<span class="sb">    ```r</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">5</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">)</span>
+<span class="sb">    ```</span>
+=== &quot;python&quot;
+    Generating a list of integers:
+<span class="sb">    ```python</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="sb">    ```</span>
+</code></pre></div>
+<p><em>output:</em></p>
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">R</label><div class="tabbed-content">
+<p>Generating a vector of integers:
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">5</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">)</span>
+</code></pre></div></p>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">python</label><div class="tabbed-content">
+<p>Generating a list of integers:
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div></p>
+</div>
+</div>
+<p>Mkdocs material comes with a very wide range of <a href="https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/">emoticons and icons</a>. Use the search field in the link to search for icons. Here&rsquo;s an example:</p>
+<div class="tabbed-set" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>Write an e-mail :material-send:, add a pdf :material-file-pdf: and wait :clock1:
+</code></pre></div>
+</div>
+<input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><label for="__tabbed_4_2">output</label><div class="tabbed-content">
+<p>Write an e-mail <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m2 21 21-9L2 3v7l15 2-15 2z"/></svg></span>, add a pdf :material-file-pdf: and wait <img alt="🕐" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/1f550.svg" title=":clock1:" /></p>
+</div>
+</div>
+<p>You can make a <a href="https://squidfunk.github.io/mkdocs-material/reference/buttons/">button</a> like this:</p>
+<div class="tabbed-set" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><label for="__tabbed_5_1">code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>[<span class="nt">Download the presentation</span>](<span class="na">../assets/pdf/introduction_gh_pages.pdf</span>){: .md-button }
+</code></pre></div>
+</div>
+<input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><label for="__tabbed_5_2">output</label><div class="tabbed-content">
+<p><a class="md-button" href="../assets/pdf/introduction_gh_pages.pdf">Download the presentation</a></p>
+</div>
+</div>
+<p>You can also add an icon to a button:</p>
+<div class="tabbed-set" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><label for="__tabbed_6_1">code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>[<span class="nt">:fontawesome-solid-file-pdf: Download the presentation</span>](<span class="na">../assets/pdf/introduction_gh_pages.pdf</span>){: .md-button }
+</code></pre></div>
+</div>
+<input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><label for="__tabbed_6_2">output</label><div class="tabbed-content">
+<p><a class="md-button" href="../assets/pdf/introduction_gh_pages.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 28.7 28.7 0 64 0h160v128c0 17.7 14.3 32 32 32h128v144H176c-35.3 0-64 28.7-64 64v144H64c-35.3 0-64-28.7-64-64zm384 64H256V0zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56h-16v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V368c0-8.8 7.2-16 16-16m32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24h-16v48zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48h-32c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16m32 128c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16h-16v96zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16h-32v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16h-32v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V368"/></svg></span> Download the presentation</a></p>
+</div>
+</div>
+<p>Lastly, you can incorporate <code>html</code>. This can particularly be convenient if you want to control the size of images.</p>
+<div class="tabbed-set" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><label for="__tabbed_7_1">code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">figure</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;../assets/images/zoom_icons.png&quot;</span> <span class="na">width</span><span class="o">=</span><span class="s">&quot;300&quot;</span><span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">figure</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">figure</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;../assets/images/zoom_icons.png&quot;</span> <span class="na">width</span><span class="o">=</span><span class="s">&quot;100&quot;</span><span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">figure</span><span class="p">&gt;</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><label for="__tabbed_7_2">output</label><div class="tabbed-content">
+<p><figure>
+  <img src="../assets/images/zoom_icons.png" width="300"/>
+</figure></p>
+<p><figure>
+  <img src="../assets/images/zoom_icons.png" width="100"/>
+</figure></p>
+</div>
+</div>
+<h2 id="byo-workshop">BYO workshop</h2>
+<p>If you have brought your own course material, now you can start with generating a page containing your own course material.</p>
+<h2 id="host-the-website-at-githubio">Host the website at github.io</h2>
+<p>You can deploy your website as a github page by running the command:</p>
+<div class="highlight"><pre><span></span><code>mkdocs<span class="w"> </span>gh-deploy
+</code></pre></div>
+<p>It will become available at <code>[NAMESPACE].github.io/[REPONAME]</code>. This can take more than an hour if you are deploying for the first time. The next time you update your website, it will usually take less then a minute.</p>
+<h2 id="pushing-to-a-remote-repository">Pushing to a remote repository</h2>
+<p>The website html is created in a directory called <code>site</code> inside your repository directory. This directory is used to locally host the website, but usually you don&rsquo;t want to push it to your master branch. Therefore add it to <code>.gitignore</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;site&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>.gitignore
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Anything that is added to the file <code>.gitignore</code> is not added to the git repository. You have to add such files/directories only once. You can of course also open <code>.gitignore</code> in your favourite text editor and modify it in there.</p>
+</div>
+<p>Now, you can add your changes to make a commit:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>--all
+</code></pre></div>
+<p>And commit your changes to your local repository like this:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s1">&#39;short description&#39;</span>
+</code></pre></div>
+<p>And finally push it to the remote:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>push
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1154 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../02_QC_post_alignment/">
+      
+      
+        <link rel="next" href="../04_build_consensus_peak_set/">
+      
+      
+      <link rel="icon" href="../../assets/images/SIB_logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>03 Peak calling - Introduction to NGS ATAC-seq data analysis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#peak-calling" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Introduction to NGS ATAC-seq data analysis" class="md-header__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Introduction to NGS ATAC-seq data analysis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              03 Peak calling
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Introduction to NGS ATAC-seq data analysis" class="md-nav__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    Introduction to NGS ATAC-seq data analysis
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../precourse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precourse preparations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course_schedule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Course schedule
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Day1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Day1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_connect_to_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    00 Connect to server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_filter_bam_files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    01 Filter bam files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_QC_post_alignment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    02 QC post alignment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    03 Peak calling
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    03 Peak calling
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-fragment-size-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Fragment size filtering
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-peak-calling-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Peak calling strategies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Peak calling strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-macs3-peak-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 MACS3 Peak Calling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 MACS3 Peak Calling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#peak-calling-with-nucleosome-free-fragments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Calling with Nucleosome-Free Fragments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#peak-calling-with-all-fragments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Calling with all Fragments
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-hmmratac-peak-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 HMMRATAC Peak Calling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-compare-peak-calling-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Compare Peak Calling Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Compare Peak Calling Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-visualise-peaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Visualise peaks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-visualize-peak-calling-results-in-igv" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Visualize Peak Calling Results in IGV
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Visualize Peak Calling Results in IGV">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-5-compare-peak-calling-methods-using-igv" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task 5: Compare Peak Calling Methods Using IGV
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task 5: Compare Peak Calling Methods Using IGV">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#peak-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Files:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bam-files-for-read-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      BAM Files for Read Coverage:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_build_consensus_peak_set/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    04 Build consensus peak set
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_quantify_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    05 Quantify peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_differential_accessibility_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    06 Differential accessibility analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_annotate_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    07 Annotate peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-fragment-size-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Fragment size filtering
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-peak-calling-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Peak calling strategies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Peak calling strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-macs3-peak-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.1 MACS3 Peak Calling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 MACS3 Peak Calling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#peak-calling-with-nucleosome-free-fragments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Calling with Nucleosome-Free Fragments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#peak-calling-with-all-fragments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Calling with all Fragments
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-hmmratac-peak-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.2 HMMRATAC Peak Calling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-compare-peak-calling-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Compare Peak Calling Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Compare Peak Calling Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-visualise-peaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Visualise peaks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-visualize-peak-calling-results-in-igv" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Visualize Peak Calling Results in IGV
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Visualize Peak Calling Results in IGV">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-5-compare-peak-calling-methods-using-igv" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task 5: Compare Peak Calling Methods Using IGV
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task 5: Compare Peak Calling Methods Using IGV">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#peak-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Peak Files:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bam-files-for-read-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      BAM Files for Read Coverage:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="peak-calling">Peak Calling</h1>
+<h2 id="overview">Overview</h2>
+<p>After quality control, we will identify accessible chromatin regions (peaks) using different approaches and fragment size filters.  </p>
+<p>We will compare peak calling results using:<br />
+1. Only nucleosome-free fragments<br />
+2. All fragments combined<br />
+3. HMMRATAC (ATAC-seq specific peak caller)  </p>
+<h3 id="learning-objectives">Learning Objectives</h3>
+<ul>
+<li>Understand nucleosome-free vs. nucleosome-associated fragments</li>
+<li>Use MACS3 for peak calling with different fragment size filters</li>
+<li>Compare peak calling results from different approaches</li>
+<li>Learn about ATAC-seq specific peak caller HMMRATAC</li>
+</ul>
+<h2 id="1-fragment-size-filtering">1. Fragment size filtering</h2>
+<p>Before calling peaks with MACS3, we will separate fragments based on their size:</p>
+<ul>
+<li><strong>Nucleosome-free (NF) fragments</strong> (&lt; 100 bp): Represent open chromatin regions</li>
+<li><strong>Nucleosome-associated fragments</strong> (&gt; 100 bp): Represent regions with positioned nucleosomes</li>
+</ul>
+<p>We can do that using <a href="https://www.htslib.org/doc/samtools-view.html"><code>samtools view</code></a> as we have seen in previous exercises. </p>
+<p><strong>Task 1: Filter for nucleosome-free (NF) fragments</strong></p>
+<ul>
+<li>Create output directory: <code>results/01_filtered_bams/NF_bams</code></li>
+<li>Using <code>samtool view</code> Filter BAM files to keep only fragments with length 1-100 bp  </li>
+<li>Save filtered files as: <code>results/01_filtered_bams/NF_bams/${sample_name}_NF.bam</code></li>
+<li>Maintain BAM file headers during filtering</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In SAM format, column 9 is described as &ldquo;TLEN: signed observed Template LENgth&rdquo;, which corresponds to the insert size length.</p>
+</div>
+<details class="info">
+<summary>Hint</summary>
+<p>Use <code>samtools view</code> with <code>awk</code> commands to filter reads:</p>
+<ul>
+<li>Filter column 9 (TLEN) using awk: <code>($9&gt;= 1 &amp;&amp; $9&lt;=100) || ($9&lt;=-1 &amp;&amp; $9&gt;=-100)</code></li>
+<li>Keep header lines with <code>-h</code></li>
+<li>Pipe to <code>samtools view -b</code> for BAM output</li>
+</ul>
+</details>
+<details class="success">
+<summary>Solution</summary>
+<div class="highlight"><pre><span></span><code># create new directory for peaks
+mkdir -p results/01_filtered_bams/NF_bams
+
+# filter for NF fragments only
+
+for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
+    sample_name=$(basename &quot;$bam&quot; .qc_bl_filt.sorted.bam)
+    echo &quot;Processing sample: $sample_name&quot;
+    samtools view -h $bam | awk &#39;substr($0,1,1)==&quot;@&quot; || ($9&gt;= 1 &amp;&amp; $9&lt;=100) || ($9&lt;=-1 &amp;&amp; $9&gt;=-100)&#39; | \
+    samtools view -b &gt; results/01_filtered_bams/NF_bams/${sample_name}_NF.bam 
+done 
+</code></pre></div>
+<p><strong>Parameter explanations</strong>:<br />
+- <code>-h</code>: Keep header in output<br />
+- <code>-b</code>: Output in BAM format<br />
+- <code>$9</code>: Insert size (TLEN field in SAM format)<br />
+- <strong>Filter logic</strong>: Keep fragments with insert size between 1 and 100bp (nucleosome-free regions)</p>
+</details>
+<p><strong>Task 2: sort and index BAM files</strong></p>
+<ul>
+<li>Sort and index the bams files for next step</li>
+<li>Remove the unsorted file</li>
+</ul>
+<div class="highlight"><pre><span></span><code>for bam in results/01_filtered_bams/NF_bams/*_NF.bam; do
+    sample_name=$(basename &quot;$bam&quot; _NF.bam)
+    samtools sort -o results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
+    rm results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
+    samtools index results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam
+done
+</code></pre></div>
+<h2 id="2-peak-calling-strategies">2. Peak calling strategies</h2>
+<h3 id="21-macs3-peak-calling">2.1 MACS3 Peak Calling</h3>
+<p>MACS3 is a widely used peak calling tool that can handle both narrow and broad peaks. We&rsquo;ll start using MACS3 function &ldquo;callpeak&rdquo; and compare results using different fragment size filters.</p>
+<h4 id="peak-calling-with-nucleosome-free-fragments">Peak Calling with Nucleosome-Free Fragments</h4>
+<p>We will first call peaks using MACS3 on NF reads only, focusing on fragments most likely to represent open chromatin regions.</p>
+<p><strong>Task 3: MACS3 on NF fragments</strong></p>
+<ul>
+<li>Create a new folder named: <code>results/03_peak_calling</code></li>
+<li>Create a subfolder inside called: <code>NF_peaks</code></li>
+<li>Call peaks on NF reads using MACS3 callpeak function. Save the results inside <code>results/03_peak_calling/NF_peaks/</code> and name the files as: <code>NF_peaks_${sample_name}</code></li>
+</ul>
+<div class="admonition macs3 parameters">
+<p class="admonition-title">Macs3</p>
+<p>You can have a look at the MACS3 documentation for more details on the parameters used <a href="https://macs3-project.github.io/MACS/docs/callpeak.html">here</a></p>
+</div>
+<details class="info">
+<summary>Hint</summary>
+<p>For ATAC-seq data, we will use the BAMPE format, which is suitable for paired-end data and we will set the genome size to &ldquo;mm&rdquo; for mouse. We will also set a q-value cutoff of 0.01 to control the false discovery rate.</p>
+</details>
+<details class="success">
+<summary>Solution</summary>
+<p><div class="highlight"><pre><span></span><code>mkdir -p results/03_peak_calling/NF_peaks
+
+samples=(Kidney_rep1 Kidney_rep2 Cerebrum_rep1 Cerebrum_rep2)
+
+# process NF reads
+bams_path=&quot;results/01_filtered_bams/NF_bams&quot;
+
+for sample_name in &quot;${samples[@]}&quot;; do
+    echo &quot;Processing sample: $sample_name&quot;
+    macs3 callpeak -f BAMPE -t $bams_path/${sample_name}_NF.sorted.bam -g mm -q 0.01 --name ${sample_name}_NF --outdir results/03_peak_calling/NF_peaks/NF_peaks_${sample_name}/
+done
+</code></pre></div>
+parameters explanation:<br />
+<code>-f BAMPE</code>: input file format is BAM paired-end<br />
+<code>-t</code>: input file (BAM file)<br />
+<code>-g mm</code>: It’s the mappable genome size or effective genome size (some are pre-computed, like mouse, and you can specify &ldquo;mm&rdquo;
+<code>-q 0.01</code>: q-value cutoff for peak detection<br />
+<code>--outdir</code>: output directory for peak files  </p>
+</details>
+<h4 id="peak-calling-with-all-fragments">Peak Calling with all Fragments</h4>
+<p>We will do the same, but using all fragments </p>
+<p><strong>Task 4: MACS3 on all fragments</strong></p>
+<ul>
+<li>Create a new folder named: <code>results/03_peak_calling/all_peaks</code></li>
+<li>Call peaks on all filtered reads using MACS3 callpeak function. Save the results inside <code>results/03_peak_calling/all_peaks/</code> and name the files as: <code>all_peaks_${sample_name}</code></li>
+</ul>
+<details class="success">
+<summary>Solution</summary>
+<div class="highlight"><pre><span></span><code>bams_path=&quot;results/01_filtered_bams/&quot;
+mkdir -p results/03_peak_calling/all_peaks
+
+for sample in &quot;${samples[@]}&quot;; do
+    echo &quot;Processing sample: $sample&quot;
+    macs3 callpeak -f BAMPE -t $bams_path/${sample}.qc_bl_filt.sorted.bam -g mm -q 0.01 --name ${sample}_all --outdir results/03_peak_calling/all_peaks/all_peaks_${sample}/ 2&gt; results/03_peak_calling/all_peaks/${sample}_macs3.log
+done
+</code></pre></div>
+</details>
+<h3 id="22-hmmratac-peak-calling">2.2 HMMRATAC Peak Calling</h3>
+<p><a href="https://academic.oup.com/nar/article/47/16/e91/5519166?login=true">HMMRATAC</a> is specifically designed for ATAC-seq data and uses a Hidden Markov Model to identify accessible chromatin regions. It models the distribution of fragment lengths to distinguish between nucleosome-free regions and nucleosome-bound regions, to provide a more accurate identification of open chromatin regions.  </p>
+<p>We will use the filtered BAM files (all fragments) for this analysis.  </p>
+<div class="admonition tip">
+<p class="admonition-title">Bonus Task</p>
+<ul>
+<li>Create a new directory named: <code>results/03_peak_calling/hmmratac_peaks</code>.</li>
+<li>Have a look at the <a href="https://macs3-project.github.io/MACS/docs/hmmratac.html">HMMRATAC documentation</a> for more details on the parameters used.</li>
+<li>This step can take a bit longer, while waiting you can move to the next section of the tutorial.</li>
+</ul>
+<details class="success">
+<summary>Solution</summary>
+<p><div class="highlight"><pre><span></span><code>mkdir -p results/03_peak_calling/hmmratac_peaks
+
+for sample in &quot;${samples[@]}&quot;; do
+    echo &quot;Processing sample: $sample&quot;
+    macs3 hmmratac -i $bams_path/${sample}.qc_bl_filt.sorted.bam -f BAMPE --name ${sample}_hmmratac --outdir results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_${sample}/
+done
+</code></pre></div>
+Parameters explanation:<br />
+<code>-i</code>: input file (BAM file)<br />
+<code>-f BAMPE</code>: input file format is BAM paired-end<br />
+<code>--outdir</code>: output directory for peak files  </p>
+</details>
+</div>
+<h2 id="3-compare-peak-calling-results">3. Compare Peak Calling Results</h2>
+<h3 id="31-visualise-peaks">3.1 Visualise peaks</h3>
+<p><strong>Task 5: Load traks into IGV</strong> </p>
+<h2 id="3-visualize-peak-calling-results-in-igv">3. Visualize Peak Calling Results in IGV</h2>
+<h3 id="task-5-compare-peak-calling-methods-using-igv">Task 5: Compare Peak Calling Methods Using IGV</h3>
+<p>Now we will visualize and compare the different peak calling results using the Integrative Genomics Viewer (IGV) to understand how each method performs.</p>
+<p><strong>What you will load:</strong></p>
+<p>For <strong>Cerebrum_rep1</strong> sample, download and load the following files in IGV:</p>
+<h4 id="peak-files">Peak Files:</h4>
+<ul>
+<li>MACS3 NF peaks: <code>results/03_peak_calling/NF_peaks/NF_peaks_Cerebrum_rep1/Cerebrum_rep1_NF_peaks.narrowPeak</code></li>
+<li>MACS3 all peaks: <code>results/03_peak_calling/all_peaks/all_peaks_Cerebrum_rep1/Cerebrum_rep1_all_peaks.narrowPeak</code></li>
+<li>HMMRATAC peaks: <code>results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_Cerebrum_rep1/Cerebrum_rep1_hmmratac_accessible_regions.narrowPeak</code> <em>(if you completed the bonus task)</em></li>
+</ul>
+<h4 id="bam-files-for-read-coverage">BAM Files for Read Coverage:</h4>
+<ul>
+<li>All fragments BAM: <code>results/01_filtered_bams/Cerebrum_rep1.qc_bl_filt.sorted.bam</code></li>
+<li>Nucleosome-free fragments BAM: <code>results/01_filtered_bams/NF_bams/Cerebrum_rep1_NF.sorted.bam</code></li>
+</ul>
+<p>Do you observe big differences between methods? which method would work better to study TF binding sites? and for DA analysis? 
+Can you find an example of a gene where the nucleosomal pattern at TSS can be percieved? </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

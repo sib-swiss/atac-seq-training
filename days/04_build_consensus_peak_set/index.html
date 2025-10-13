@@ -1,0 +1,827 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../03_peak_calling/">
+      
+      
+        <link rel="next" href="../05_quantify_peaks/">
+      
+      
+      <link rel="icon" href="../../assets/images/SIB_logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>04 Build consensus peak set - Introduction to NGS ATAC-seq data analysis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#build-consensus-peak-set" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Introduction to NGS ATAC-seq data analysis" class="md-header__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Introduction to NGS ATAC-seq data analysis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              04 Build consensus peak set
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Introduction to NGS ATAC-seq data analysis" class="md-nav__button md-logo" aria-label="Introduction to NGS ATAC-seq data analysis" data-md-component="logo">
+      
+  <img src="../../assets/images/SIB_logo.svg" alt="logo">
+
+    </a>
+    Introduction to NGS ATAC-seq data analysis
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sib-swiss/gh-pages-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sib-swiss/gh-pages-training
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../precourse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precourse preparations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course_schedule/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Course schedule
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Day1
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Day1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00_connect_to_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    00 Connect to server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_filter_bam_files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    01 Filter bam files
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_QC_post_alignment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    02 QC post alignment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_peak_calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    03 Peak calling
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    04 Build consensus peak set
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    04 Build consensus peak set
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-build-consensus-peak-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Build Consensus Peak Annotation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_quantify_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    05 Quantify peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_differential_accessibility_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    06 Differential accessibility analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_annotate_peaks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    07 Annotate peaks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-build-consensus-peak-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Build Consensus Peak Annotation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="build-consensus-peak-set">Build Consensus Peak Set</h1>
+<h2 id="overview">Overview</h2>
+<p>After calling peaks in individual replicates, we need to create a unified peak set for downstream analysis by identifying reproducible peaks across replicates.</p>
+<h3 id="learning-objectives">Learning Objectives</h3>
+<ul>
+<li>Understand the importance of reproducible peaks in ATAC-seq analysis</li>
+<li>Use bedtools to intersect peaks between replicates</li>
+<li>Create a consensus peak set for differential accessibility analysis</li>
+<li>Visualize consensus peaks in IGV</li>
+</ul>
+<h2 id="1-build-consensus-peak-annotation">1. Build Consensus Peak Annotation</h2>
+<p>For robust downstream analysis, we need peaks that are reproducible across biological replicates. This ensures our analysis focuses on genuine accessible chromatin regions rather than technical artifacts.</p>
+<p>Build a consensus peak set, which will become your reference annotation for counting reads in peaks later on.</p>
+<p><strong>Task 1: intersect peaks between replicates</strong></p>
+<p>Find peaks that are present in both replicates within each condition:</p>
+<ul>
+<li>Create output directory: <code>results/04_consensus_peaks</code></li>
+<li>Use bedtools intersect with 25% reciprocal overlap requirement</li>
+<li>Generate separate intersection files for each condition</li>
+<li>In order to get original peaks from both replicates (without appending the output), run bedtools intersect twice, swapping the order to capture all peaks. </li>
+</ul>
+<details class="info">
+<summary>Hint</summary>
+<p>Use <code>bedtools intersect</code> with parameters:<br />
+- <code>-f 0.25</code>: minimum 25% overlap<br />
+- <code>-r</code>: reciprocal overlap required<br />
+- <code>-wa</code>: write original entries from file A<br />
+- Run twice with swapped files to capture all overlapping peaks</p>
+</details>
+<details class="success">
+<summary>Solution</summary>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create output directory</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>results/04_consensus_peaks
+<span class="nv">path_peaks</span><span class="o">=</span><span class="s2">&quot;results/03_peak_calling/all_peaks&quot;</span>
+
+<span class="c1"># Intersect Kidney replicates (run twice to get all overlaps)</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/Kidney_intersect.bed
+
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Kidney_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;&gt;<span class="w"> </span>results/04_consensus_peaks/Kidney_intersect.bed
+
+<span class="c1"># Intersect Cerebrum replicates (run twice to get all overlaps)</span>
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
+
+bedtools<span class="w"> </span>intersect<span class="w"> </span>-wa<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep1/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-a<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks_Cerebrum_rep2/NA_peaks.narrowPeak<span class="w"> </span><span class="se">\</span>
+<span class="w">                      </span>-f<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span>-r<span class="w"> </span>&gt;&gt;<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
+
+<span class="c1"># Check file format</span>
+head<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
+</code></pre></div>
+<p><strong>Parameter explanations</strong>:<br />
+- <code>-a</code>: First input file (bed or narrowPeak format)<br />
+- <code>-b</code>: Second input file (bed or narrowPeak format)  <br />
+- <code>-f 0.25</code>: Minimum overlap required as a fraction of A<br />
+- <code>-r</code>: Require reciprocal overlap<br />
+- <code>-wa</code>: Write the original entry in A for each overlap<br />
+- <strong>Why twice?</strong>: Running bedtools intersect twice with swapped files ensures we capture all overlapping peaks  </p>
+</details>
+<p><strong>Task 2: Create final consensus peak set</strong></p>
+<p>Merge the intersected peaks from both conditions into a final consensus peak set, allowing a maximum distance of 10bp between peaks to be merged (-d 10).  </p>
+<ul>
+<li>Combine peaks from both conditions</li>
+<li>Sort by genomic coordinates</li>
+<li>Merge nearby peaks (within 10bp) to avoid redundancy</li>
+</ul>
+<div class="highlight"><pre><span></span><code># concatenate intersection of both replicates and sort the file
+cat results/04_consensus_peaks/Kidney_intersect.bed results/04_consensus_peaks/Cerebrum_intersect.bed | sort -k1,1 -k2,2n &gt; results/04_consensus_peaks/consensus_peaks_temp.bed
+sort -k1,1 -k2,2n results/04_consensus_peaks/consensus_peaks_temp.bed &gt; results/04_consensus_peaks/consensus_peaks_temp_sorted.bed
+
+# Use bedtools merge to merfe peaks at shorter distance than 10bp
+bedtools merge -d 10 -i results/04_consensus_peaks/consensus_peaks_temp.bed &gt; results/04_consensus_peaks/consensus_peaks.bed
+</code></pre></div>
+<p>Add the <code>results/04_consensus_peaks/consensus_peaks.bed</code> track to IGV and have a look to the resulting peak annotation. </p>
+<p><strong>Task 3: Visualize Consensus Peaks</strong></p>
+<ul>
+<li>Load <code>results/04_consensus_peaks/consensus_peaks.bed</code> in IGV</li>
+<li>Compare with individual replicate peak files (for that, load results from peak calling from each sample)</li>
+<li>Assess the quality and coverage of your consensus peak set</li>
+</ul>
+<ol>
+<li>Do the consensus peaks cover the main accessible regions you observed in individual replicates?</li>
+<li>Was the merging of nearby regions to stringent? too relax? </li>
+<li>Are there regions where you lost peaks due to the stringent overlap requirements?</li>
+</ol>
+<p><strong>Task 4: Count number of peaks</strong></p>
+<ul>
+<li>Count how many peaks contains your consensus peak set.</li>
+<li>Count how many peaks each individual sample contained</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># Count final consensus peaks</span>
+wc<span class="w"> </span>-l<span class="w"> </span>results/04_consensus_peaks/consensus_peaks.bed
+
+<span class="c1"># Count peaks in each sample</span>
+<span class="nv">samples</span><span class="o">=(</span>Kidney_rep1<span class="w"> </span>Kidney_rep2<span class="w"> </span>Cerebrum_rep1<span class="w"> </span>Cerebrum_rep2<span class="o">)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Number of peaks called by MACS3:&quot;</span>
+<span class="k">for</span><span class="w"> </span>sample<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>wc<span class="w"> </span>-l<span class="w"> </span>results/03_peak_calling/all_peaks/all_peaks_<span class="si">${</span><span class="nv">sample</span><span class="si">}</span>/NA_peaks.narrowPeak
+<span class="k">done</span>
+
+<span class="c1"># Check file format</span>
+head<span class="w"> </span>results/04_consensus_peaks/consensus_peaks.bed
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
