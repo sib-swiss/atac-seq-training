@@ -1,5 +1,4 @@
 # Post-Alignment Reads Filtering
-test
 
 ## Overview
 In this section, we will filter BAM files to remove low-quality reads and prepare them for downstream analysis.
