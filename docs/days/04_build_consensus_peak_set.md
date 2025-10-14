@@ -35,6 +35,7 @@ Find peaks that are present in both replicates within each condition:
     - Run twice with swapped files to capture all overlapping peaks
 
 ??? success "Solution"
+
     ```bash
     # Create output directory
     mkdir -p results/04_consensus_peaks
@@ -82,7 +83,7 @@ Merge the intersected peaks from both conditions into a final consensus peak set
 
 
 
-```{bash}
+```bash
 # concatenate intersection of both replicates and sort the file
 cat results/04_consensus_peaks/Kidney_intersect.bed results/04_consensus_peaks/Cerebrum_intersect.bed | sort -k1,1 -k2,2n > results/04_consensus_peaks/consensus_peaks_temp.bed
 sort -k1,1 -k2,2n results/04_consensus_peaks/consensus_peaks_temp.bed > results/04_consensus_peaks/consensus_peaks_temp_sorted.bed
@@ -118,8 +119,8 @@ wc -l results/04_consensus_peaks/consensus_peaks.bed
 # Count peaks in each sample
 samples=(Kidney_rep1 Kidney_rep2 Cerebrum_rep1 Cerebrum_rep2)
 echo "Number of peaks called by MACS3:"
-for sample in "${samples[@]}"; do
-    wc -l results/03_peak_calling/all_peaks/all_peaks_${sample}/NA_peaks.narrowPeak
+for sample_name in "${samples[@]}"; do
+    wc -l results/03_peak_calling/all_peaks/all_peaks_${sample_name}/${sample_name}_all_peaks.narrowPeak
 done
 
 # Check file format

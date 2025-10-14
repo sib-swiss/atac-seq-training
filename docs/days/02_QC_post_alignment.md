@@ -48,14 +48,16 @@ In order to assess the quality of the ATAC-seq experiment, there are several met
 
 
 ??? success "Solution"
-    ```{bash}
+
+    ```bash
     mkdir -p results/02_QC_post_alignment
     TSS_bed="/data/references/ENCODE_mm10_M21_TSS_reference.bed"
 
-    for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-        echo "Processing file: $bam"
-        sample_name=$(basename "$bam" .qc_bl_filt.sorted.bam) 
-        ataqv --name $sample_name --metrics-file results/02_QC_post_alignment/$sample_name.ataqv.json --tss-file $TSS_bed mouse $bam > results/02_QC_post_alignment/$sample_name.ataqv.out
+    for sample_name in "${samples[@]}"; do
+        echo "Processing sample: $sample_name"
+
+        # run command
+        ataqv --name $sample_name --metrics-file results/02_QC_post_alignment/$sample_name.ataqv.json --tss-file $TSS_bed mouse $path_bams/$sample_name.qc_bl_filt.sorted.bam > results/02_QC_post_alignment/$sample_name.ataqv.out
     done
     ```
     **Parameter explanations**:
@@ -77,6 +79,7 @@ Compile all individual QC reports into a comprehensive summary. Use the `mkarv` 
     - Include all JSON files with wildcard pattern
 
 ??? success "Solution"
+
     ```bash
     # Create summary report from all JSON files without changing directories
     mkarv results/02_QC_post_alignment/summary_ataqv results/02_QC_post_alignment/*.ataqv.json

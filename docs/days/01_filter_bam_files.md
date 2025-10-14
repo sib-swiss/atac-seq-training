@@ -53,7 +53,7 @@ In the next exercises, you will use samtools view to visualise the alignment out
 
 - Visualise one of the .bam files with samtools running the following command:
 
-```{bash}
+```bash
 samtools view /data/Liu_alignments_chr6/Kidney_rep1.bam | head
 ```
 Can you recognise what the different columns represent?  
@@ -93,7 +93,8 @@ You can use:
 
     
 ??? success "Solution"
-    ```{bash}
+
+    ```bash
     samtools view  -q 10 -f 1 -F 1292 /data/Liu_alignments_chr6/Kidney_rep2.bam | head
     ```
 
@@ -105,17 +106,24 @@ Finally, apply these filters to all .bam files and save them in .bam format (che
 
 ??? success "Solution"
 
-    ```{bash}
-    # create new directory for filtered bams
+    ```bash
+    # To be able to iterate through all samples:
+    samples=(Kidney_rep1 Kidney_rep2 Cerebrum_rep1 Cerebrum_rep2)
 
+    # create new directory for filtered bams
     mkdir -p results/01_filtered_bams
+
+    # save the path to the folder in a variable
+    path_bams="results/01_filtered_bams"
+
 
     # filter files using a for loop
 
-    for bam in /data/Liu_alignments_chr6/*.bam; do
-        echo "Processing file: $bam"
-        sample_name=$(basename "$bam" .bam) # extract sample name without path and extension
-        samtools view -h -b -q 10 -f 1 -F 1292 -o results/01_filtered_bams/$sample_name.qc_filt.bam $bam
+    for sample_name in "${samples[@]}"; do
+        echo "Processing sample: $sample_name"
+        
+        # run command
+        samtools view -h -b -q 10 -f 1 -F 1292 -o $path_bams/$sample_name.qc_filt.bam /data/Liu_alignments_chr6/$sample_name.bam
     done
     ```
 
@@ -133,11 +141,13 @@ After filtering we will sort and index the bam files for the next step
 
 Next, sort and index the bam files for downstream analysis.
 
-```{bash}
-for bam in results/01_filtered_bams/*qc_filt.bam; do
-    echo "Processing file: $bam"
-    samtools sort -o ${bam%.bam}.sorted.bam $bam
-    samtools index ${bam%.bam}.sorted.bam
+```bash
+for sample_name in "${samples[@]}"; do
+    echo "Processing sample: $sample_name"
+    
+    # run commands
+    samtools sort -o $path_bams/$sample_name.qc_filt.sorted.bam $path_bams/$sample_name.qc_filt.bam
+    samtools index $path_bams/$sample_name.qc_filt.sorted.bam
 done
 ``` 
 
@@ -148,7 +158,7 @@ To avoid confusion and large size files, keep only the sorted and indexed bams:
     **Important before deleting:**  
     Run this command *only* if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.
 
-```{bash}
+```bash
 rm results/01_filtered_bams/*qc_filt.bam
 ```
 
@@ -158,7 +168,8 @@ rm results/01_filtered_bams/*qc_filt.bam
 Mitochondria DNA is nucleosome free, therefore it is more accessible for Tn5 and several reads may have originated from mitochondrial DNA. After having assessed mitochondrial % on the QC, we can discard reads coming from chmMT to avoid biases in downstream analysis.
 
 Since we are working only with chr6 we don't need to do this step, but here is the command you could use for that:
-```{bash}
+
+```bash
 samtools view -h input.bam | awk  '($3 != "MT")' | samtools view -hb - > output.bam
 ```
 !!! Note
@@ -169,7 +180,7 @@ Next, we will remove reads overlapping problematic regions of the genome. ENCODE
 !!! Note
     The regions for mm10 have been dowloaded as a .bed file, you can find it here: `/data/references/mm10-blacklist.v2.nochr.bed`
 
-**Task 3: Remove blacklist regions**
+**Task 4: Remove blacklist regions**
 
 
 - Using [`bedtools intersect`](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html) filter out reads overlapping regions in the Blacklist .bed file
@@ -188,14 +199,16 @@ Next, we will remove reads overlapping problematic regions of the genome. ENCODE
 
 
 
-??? success "Solution"
-    ```{bash}
+??? success "Solution"  
+
+    ```bash
     blacklist="/data/references/mm10-blacklist.v2.nochr.bed"
 
-    for bam in results/01_filtered_bams/*qc_filt.sorted.bam; do
-        echo "Processing file: $bam"
-        sample_name=$(basename "$bam" .qc_filt.sorted.bam) 
-        bedtools intersect -v -abam $bam -b $blacklist > results/01_filtered_bams/$sample_name.qc_bl_filt.bam
+    for sample_name in "${samples[@]}"; do
+        echo "Processing sample: $sample_name"
+        
+        # run command
+        bedtools intersect -v -abam $path_bams/$sample_name.qc_filt.sorted.bam -b $blacklist > $path_bams/$sample_name.qc_bl_filt.bam
     done
     ```
 
@@ -204,17 +217,19 @@ Next, we will remove reads overlapping problematic regions of the genome. ENCODE
      **-abam**: input is in bam format 
 
 
-**Task 4: Sort and index the previous files**  
+
+**Task 5: Sort and index the previous files**  
 
 Sort and index the bam files for downstream analysis.  
 
 
-```{bash}
-for bam in results/01_filtered_bams/*qc_bl_filt.bam; do
-    echo "Processing file: $bam"
-    sample_name=$(basename "$bam" .qc_bl_filt.bam) 
-    samtools sort -o results/01_filtered_bams/$sample_name.qc_bl_filt.sorted.bam results/01_filtered_bams/$sample_name.qc_bl_filt.bam
-    samtools index results/01_filtered_bams/$sample_name.qc_bl_filt.sorted.bam
+```bash
+for sample_name in "${samples[@]}"; do
+    echo "Processing sample: $sample_name"
+    
+    # run commands
+    samtools sort -o $path_bams/$sample_name.qc_bl_filt.sorted.bam $path_bams/$sample_name.qc_bl_filt.bam
+    samtools index $path_bams/$sample_name.qc_bl_filt.sorted.bam
 done
 ```
 
@@ -224,14 +239,14 @@ After sorting the .bam files, we don't need the unsorted .bam. To free some spac
     **Important before deleting:**  
     Run this command *only* if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.
 
-```{bash}
-rm results/01_filtered_bams/*qc_filt.bam
+```bash
+
 rm results/01_filtered_bams/*qc_bl_filt.bam
 ```
 
 
 !!! tip "Bonus Task"
-    **Taks 5: Convert .bam file into .bigwig format**
+    **Taks 6: Convert .bam file into .bigwig format**
 
     In order to visualise ATAC-seq coverage, you can convert .bam files into .bigwig format, used to represent coverage tracks in genome browsers like IGV.  
     A tool that allows you to do this conversion is [`deeptools bamCoverage`](https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html)
@@ -239,12 +254,13 @@ rm results/01_filtered_bams/*qc_bl_filt.bam
     Next, convert the sorted and filterd .bams into .bigwigs
 
 
-    ```{bash}
+    ```bash
     mkdir results/01_filtered_bams/filt_bigwigs
-    for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-        echo "Processing file: $bam"
-        sample_name=$(basename "$bam" .qc_bl_filt.sorted.bam) 
-        bamCoverage -b $bam -o results/01_filtered_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
+    for sample_name in "${samples[@]}"; do
+        echo "Processing sample: $sample_name"
+        
+        #run command
+        bamCoverage -b $bam -o $path_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
     done
     ```
 

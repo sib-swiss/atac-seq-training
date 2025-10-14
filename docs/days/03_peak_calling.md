@@ -41,19 +41,20 @@ With the following code, you will:
 
 
 !!! info "Code"
-    ```{bash}
+
+    ```bash
     # create new directory for peaks
     mkdir -p results/01_filtered_bams/NF_bams
 
     # filter for NF fragments only
 
-    for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-        sample_name=$(basename "$bam" .qc_bl_filt.sorted.bam)
+    for sample_name in "${samples[@]}"; do
         echo "Processing sample: $sample_name"
-        samtools view -h $bam | awk 'substr($0,1,1)=="@" || ($9>= 1 && $9<=100) || ($9<=-1 && $9>=-100)' | \
-        samtools view -b > results/01_filtered_bams/NF_bams/${sample_name}_NF.bam 
+        
+        # run command
+        samtools view -h $path_bams/$sample_name.qc_bl_filt.sorted.bam | awk 'substr($0,1,1)=="@" || ($9>= 1 && $9<=100) || ($9<=-1 && $9>=-100)' | \
+        samtools view -b > $path_bams/NF_bams/${sample_name}_NF.bam 
     done 
-
     ```
 
     **Parameter explanations**:  
@@ -69,13 +70,23 @@ With the following code, you will:
 - Remove the unsorted file
 
 
-```{bash}
-for bam in results/01_filtered_bams/NF_bams/*_NF.bam; do
-    sample_name=$(basename "$bam" _NF.bam)
-    samtools sort -o results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
-    rm results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
-    samtools index results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam
+```bash
+for sample_name in "${samples[@]}"; do
+    echo "Processing sample: $sample_name"
+
+    # run command
+    samtools sort -o $path_bams/NF_bams/${sample_name}_NF.sorted.bam $path_bams/NF_bams/${sample_name}_NF.bam
+    samtools index $path_bams/NF_bams/${sample_name}_NF.sorted.bam
 done
+```
+
+!!! Warning
+    **Important before deleting:**  
+    Run this command *only* if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.
+
+Remove intermediate files
+```bash
+rm results/01_filtered_bams/NF_bams/*_NF.bam
 ```
 
 ## 2. Peak calling strategies
@@ -106,16 +117,14 @@ We will first call peaks using MACS3 on NF reads only, focusing on fragments mos
 
 ??? success "Solution"
 
-    ```{bash}
+    ```bash
     mkdir -p results/03_peak_calling/NF_peaks
-
-    samples=(Kidney_rep1 Kidney_rep2 Cerebrum_rep1 Cerebrum_rep2)
-
-    # process NF reads
-    bams_path="results/01_filtered_bams/NF_bams"
+    path_peaks="results/03_peak_calling/"
 
     for sample_name in "${samples[@]}"; do
         echo "Processing sample: $sample_name"
+        
+        # run command
         macs3 callpeak -f BAMPE -t $bams_path/${sample_name}_NF.sorted.bam -g mm -q 0.01 --name ${sample_name}_NF --outdir results/03_peak_calling/NF_peaks/NF_peaks_${sample_name}/
     done
     ```
@@ -138,13 +147,14 @@ We will do the same, but using all fragments
 
 ??? success "Solution"
 
-    ```{bash}
-    bams_path="results/01_filtered_bams/"
+    ```bash
     mkdir -p results/03_peak_calling/all_peaks
 
-    for sample in "${samples[@]}"; do
-        echo "Processing sample: $sample"
-        macs3 callpeak -f BAMPE -t $bams_path/${sample}.qc_bl_filt.sorted.bam -g mm -q 0.01 --name ${sample}_all --outdir results/03_peak_calling/all_peaks/all_peaks_${sample}/ 2> results/03_peak_calling/all_peaks/${sample}_macs3.log
+    for sample_name in "${samples[@]}"; do
+        echo "Processing sample: $sample_name"
+        
+        # run command
+        macs3 callpeak -f BAMPE -t $path_bams/${sample_name}.qc_bl_filt.sorted.bam -g mm -q 0.01 --name ${sample_name}_all --outdir $path_peaks/all_peaks/all_peaks_${sample_name}/ 2> $path_peaks/all_peaks/${sample_name}_macs3.log
     done
     ```
 
@@ -164,12 +174,12 @@ We will use the filtered BAM files (all fragments) for this analysis.
 
     ??? success "Solution"
 
-        ```{bash}
+        ```bash
         mkdir -p results/03_peak_calling/hmmratac_peaks
 
-        for sample in "${samples[@]}"; do
-            echo "Processing sample: $sample"
-            macs3 hmmratac -i $bams_path/${sample}.qc_bl_filt.sorted.bam -f BAMPE --name ${sample}_hmmratac --outdir results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_${sample}/
+        for sample_name in "${samples[@]}"; do
+            echo "Processing sample: $sample_name"
+            macs3 hmmratac -i $path_bams/${sample_name}.qc_bl_filt.sorted.bam -f BAMPE --name ${sample_name}_hmmratac --outdir $path_peaks/hmmratac_peaks/hmmratac_peaks_${sample_name}/
         done
         ```
         Parameters explanation:  
