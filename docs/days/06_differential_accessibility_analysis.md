@@ -91,8 +91,8 @@ Optional: (Remove peaks with insufficient read counts)
 
 ```r
 idx <- rowSums(counts(dds, normalized=FALSE) >= 30) >= 2
-dds <- dds[idx, ]
-dim(dds)
+dds.f <- dds[idx, ]
+dim(dds.f)
 ```
 
 Perform the estimation of dispersions
@@ -211,6 +211,12 @@ Save the object
 saveRDS(peaks_gr, "results/06_DA_analysis/DA_results.RDS")
 ```
 
+And clean the environment
+
+!!! Warning
+    You must save the objects before running the following code. After running it your variables and objects will be removed.
+
 ```r
 rm(list = ls())
+.rs.restartR()
 ```

@@ -270,17 +270,16 @@ Use `enrichGO` function from [`ClusterProfiler`](https://bioconductor.org/packag
 
 ## 7. Additional Visualizations
 
-### Peak Heatmap
+There are several other plots that ChipSeeker allowes you to do. 
+You can explore a couple of examples related to plotting the profile of peaks around certain regions
 
 
-Create a heatmap showing peak signal around TSS:
+**Task 9: Peak Heatmap**
 
-
+- Create a heatmap showing peak signal around TSS:  
 
 ```r
 # Generate peak heatmap around gene bodies
-
-
 peakHeatmap(peak = gr,
             TxDb = TxDb,
             upstream = 1000,
@@ -288,14 +287,21 @@ peakHeatmap(peak = gr,
             by = "gene",
             type = "start_site",
             nbin = 800)
-
-
-promoter <- getPromoters(TxDb=TxDb, upstream=1000, downstream=1000)
-
-tagMatrix_Cer <- getTagMatrix(gr_list$down , windows=promoter)
-tagMatrix_Kid <- getTagMatrix(gr_list$up , windows=promoter)
-tagMatrixList <- list(Cerebrum=agMatrix_Cer , Kidney=tagMatrix_Kid )
-
-plotAvgProf(tagMatrixList, xlim=c(-1000, 1000), conf=0.95,resample=500, facet="row")
-plotAvgProf(tagMatrixList, xlim=c(-1000, 1000))
 ```
+
+!!! tip "Bonus Task"
+
+    Now let's plot the profile of peak counts around annotated TSS split by conditions
+
+    ```r
+    # Get TSS (promoter) annotation for mouse mm10
+    promoter <- getPromoters(TxDb=TxDb, upstream=1000, downstream=1000)
+
+    # Build a matrix of peaks per conditions, and combine them in a list
+    tagMatrix_Cer <- getTagMatrix(gr_list$down , windows=promoter)
+    tagMatrix_Kid <- getTagMatrix(gr_list$up , windows=promoter)
+    tagMatrixList <- list(Cerebrum=agMatrix_Cer , Kidney=tagMatrix_Kid )
+
+    # plot 
+    plotAvgProf(tagMatrixList, xlim=c(-1000, 1000), conf=0.95,resample=500, facet="row")
+    ```
