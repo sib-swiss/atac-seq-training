@@ -812,7 +812,7 @@ Raw data can be found in <a href="https://www.ncbi.nlm.nih.gov/sra/SRP167062">NC
 <ul>
 <li>Visualise one of the .bam files with samtools running the following command:</li>
 </ul>
-<p><div class="highlight"><pre><span></span><code>samtools view /data/Liu_alignments_chr6/Kidney_rep1.bam | head
+<p><div class="highlight"><pre><span></span><code>samtools<span class="w"> </span>view<span class="w"> </span>/data/Liu_alignments_chr6/Kidney_rep1.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
 </code></pre></div>
 Can you recognise what the different columns represent?<br />
 Why the 3rd column contains only number 6?<br />
@@ -849,23 +849,30 @@ You can use:
 
 <details class="success">
 <summary>Solution</summary>
-<div class="highlight"><pre><span></span><code>samtools view  -q 10 -f 1 -F 1292 /data/Liu_alignments_chr6/Kidney_rep2.bam | head
+<div class="highlight"><pre><span></span><code>samtools<span class="w"> </span>view<span class="w">  </span>-q<span class="w"> </span><span class="m">10</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span>-F<span class="w"> </span><span class="m">1292</span><span class="w"> </span>/data/Liu_alignments_chr6/Kidney_rep2.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
 </code></pre></div>
 </details>
 <p>Finally, apply these filters to all .bam files and save them in .bam format (check parameter -b for that) in <code>results/01_filtered_bams/&lt;sample_name&gt;.qc_filt.bam</code></p>
 <details class="success">
 <summary>Solution</summary>
-<div class="highlight"><pre><span></span><code># create new directory for filtered bams
+<div class="highlight"><pre><span></span><code><span class="c1"># To be able to iterate through all samples:</span>
+<span class="nv">samples</span><span class="o">=(</span>Kidney_rep1<span class="w"> </span>Kidney_rep2<span class="w"> </span>Cerebrum_rep1<span class="w"> </span>Cerebrum_rep2<span class="o">)</span>
 
-mkdir -p results/01_filtered_bams
+<span class="c1"># create new directory for filtered bams</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>results/01_filtered_bams
 
-# filter files using a for loop
+<span class="c1"># save the path to the folder in a variable</span>
+<span class="nv">path_bams</span><span class="o">=</span><span class="s2">&quot;results/01_filtered_bams&quot;</span>
 
-for bam in /data/Liu_alignments_chr6/*.bam; do
-    echo &quot;Processing file: $bam&quot;
-    sample_name=$(basename &quot;$bam&quot; .bam) # extract sample name without path and extension
-    samtools view -h -b -q 10 -f 1 -F 1292 -o results/01_filtered_bams/$sample_name.qc_filt.bam $bam
-done
+
+<span class="c1"># filter files using a for loop</span>
+
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>samtools<span class="w"> </span>view<span class="w"> </span>-h<span class="w"> </span>-b<span class="w"> </span>-q<span class="w"> </span><span class="m">10</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span>-F<span class="w"> </span><span class="m">1292</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_filt.bam<span class="w"> </span>/data/Liu_alignments_chr6/<span class="nv">$sample_name</span>.bam
+<span class="k">done</span>
 </code></pre></div>
 <ul>
 <li><strong>-h</strong>: keep header  </li>
@@ -878,11 +885,13 @@ done
 <p>After filtering we will sort and index the bam files for the next step</p>
 <p><strong>Task 3: Sort and index BAM files</strong> </p>
 <p>Next, sort and index the bam files for downstream analysis.</p>
-<div class="highlight"><pre><span></span><code>for bam in results/01_filtered_bams/*qc_filt.bam; do
-    echo &quot;Processing file: $bam&quot;
-    samtools sort -o ${bam%.bam}.sorted.bam $bam
-    samtools index ${bam%.bam}.sorted.bam
-done
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run commands</span>
+<span class="w">    </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_filt.sorted.bam<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_filt.bam
+<span class="w">    </span>samtools<span class="w"> </span>index<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_filt.sorted.bam
+<span class="k">done</span>
 </code></pre></div>
 <p>To avoid confusion and large size files, keep only the sorted and indexed bams:</p>
 <div class="admonition warning">
@@ -890,13 +899,13 @@ done
 <p><strong>Important before deleting:</strong><br />
 Run this command <em>only</em> if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.</p>
 </div>
-<div class="highlight"><pre><span></span><code>rm results/01_filtered_bams/*qc_filt.bam
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>results/01_filtered_bams/*qc_filt.bam
 </code></pre></div>
 <h3 id="12-atacseq-related-filtering-steps">1.2 ATACseq related filtering steps</h3>
 <p>Mitochondria DNA is nucleosome free, therefore it is more accessible for Tn5 and several reads may have originated from mitochondrial DNA. After having assessed mitochondrial % on the QC, we can discard reads coming from chmMT to avoid biases in downstream analysis.</p>
-<p>Since we are working only with chr6 we don&rsquo;t need to do this step, but here is the command you could use for that:
-<div class="highlight"><pre><span></span><code>samtools view -h input.bam | awk  &#39;($3 != &quot;MT&quot;)&#39; | samtools view -hb - &gt; output.bam
-</code></pre></div></p>
+<p>Since we are working only with chr6 we don&rsquo;t need to do this step, but here is the command you could use for that:</p>
+<div class="highlight"><pre><span></span><code>samtools<span class="w"> </span>view<span class="w"> </span>-h<span class="w"> </span>input.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w">  </span><span class="s1">&#39;($3 != &quot;MT&quot;)&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>samtools<span class="w"> </span>view<span class="w"> </span>-hb<span class="w"> </span>-<span class="w"> </span>&gt;<span class="w"> </span>output.bam
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The mitochondrial chromosome name may differ depending on the reference genome (e.g., &ldquo;MT&rdquo;, &ldquo;chrM&rdquo;, &ldquo;chrMT&rdquo;).</p>
@@ -906,7 +915,7 @@ Run this command <em>only</em> if you have named your files exactly as specified
 <p class="admonition-title">Note</p>
 <p>The regions for mm10 have been dowloaded as a .bed file, you can find it here: <code>/data/references/mm10-blacklist.v2.nochr.bed</code></p>
 </div>
-<p><strong>Task 3: Remove blacklist regions</strong></p>
+<p><strong>Task 4: Remove blacklist regions</strong></p>
 <ul>
 <li>Using <a href="https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html"><code>bedtools intersect</code></a> filter out reads overlapping regions in the Blacklist .bed file</li>
 <li>Use previously filtered .bam files as input:<br />
@@ -925,26 +934,28 @@ You can find documentation on which parameters to use <a href="https://bedtools.
 </div>
 <details class="success">
 <summary>Solution</summary>
-<div class="highlight"><pre><span></span><code>blacklist=&quot;/data/references/mm10-blacklist.v2.nochr.bed&quot;
+<div class="highlight"><pre><span></span><code><span class="nv">blacklist</span><span class="o">=</span><span class="s2">&quot;/data/references/mm10-blacklist.v2.nochr.bed&quot;</span>
 
-for bam in results/01_filtered_bams/*qc_filt.sorted.bam; do
-    echo &quot;Processing file: $bam&quot;
-    sample_name=$(basename &quot;$bam&quot; .qc_filt.sorted.bam) 
-    bedtools intersect -v -abam $bam -b $blacklist &gt; results/01_filtered_bams/$sample_name.qc_bl_filt.bam
-done
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>bedtools<span class="w"> </span>intersect<span class="w"> </span>-v<span class="w"> </span>-abam<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_filt.sorted.bam<span class="w"> </span>-b<span class="w"> </span><span class="nv">$blacklist</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.bam
+<span class="k">done</span>
 </code></pre></div>
 <p>Parameter explanation:<br />
 <strong>-v</strong>: only report those entries in A that have no overlap with B<br />
 <strong>-abam</strong>: input is in bam format </p>
 </details>
-<p><strong>Task 4: Sort and index the previous files</strong>  </p>
+<p><strong>Task 5: Sort and index the previous files</strong>  </p>
 <p>Sort and index the bam files for downstream analysis.  </p>
-<div class="highlight"><pre><span></span><code>for bam in results/01_filtered_bams/*qc_bl_filt.bam; do
-    echo &quot;Processing file: $bam&quot;
-    sample_name=$(basename &quot;$bam&quot; .qc_bl_filt.bam) 
-    samtools sort -o results/01_filtered_bams/$sample_name.qc_bl_filt.sorted.bam results/01_filtered_bams/$sample_name.qc_bl_filt.bam
-    samtools index results/01_filtered_bams/$sample_name.qc_bl_filt.sorted.bam
-done
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run commands</span>
+<span class="w">    </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.sorted.bam<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.bam
+<span class="w">    </span>samtools<span class="w"> </span>index<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.sorted.bam
+<span class="k">done</span>
 </code></pre></div>
 <p>After sorting the .bam files, we don&rsquo;t need the unsorted .bam. To free some space we will remove the unsorted bam files (intermediate files)
 .</p>
@@ -953,21 +964,21 @@ done
 <p><strong>Important before deleting:</strong><br />
 Run this command <em>only</em> if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.</p>
 </div>
-<div class="highlight"><pre><span></span><code>rm results/01_filtered_bams/*qc_filt.bam
-rm results/01_filtered_bams/*qc_bl_filt.bam
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>results/01_filtered_bams/*qc_bl_filt.bam
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Bonus Task</p>
-<p><strong>Taks 5: Convert .bam file into .bigwig format</strong></p>
+<p><strong>Taks 6: Convert .bam file into .bigwig format</strong></p>
 <p>In order to visualise ATAC-seq coverage, you can convert .bam files into .bigwig format, used to represent coverage tracks in genome browsers like IGV.<br />
 A tool that allows you to do this conversion is <a href="https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html"><code>deeptools bamCoverage</code></a></p>
 <p>Next, convert the sorted and filterd .bams into .bigwigs</p>
-<div class="highlight"><pre><span></span><code>mkdir results/01_filtered_bams/filt_bigwigs
-for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-    echo &quot;Processing file: $bam&quot;
-    sample_name=$(basename &quot;$bam&quot; .qc_bl_filt.sorted.bam) 
-    bamCoverage -b $bam -o results/01_filtered_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
-done
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>results/01_filtered_bams/filt_bigwigs
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1">#run command</span>
+<span class="w">    </span>bamCoverage<span class="w"> </span>-b<span class="w"> </span><span class="nv">$bam</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/filt_bigwigs/<span class="nv">$sample_name</span>.bw<span class="w"> </span>--region<span class="w"> </span><span class="m">6</span>:1500000:20000000<span class="w"> </span>--normalizeUsing<span class="w"> </span>CPM
+<span class="k">done</span>
 </code></pre></div>
 <p>Download the .bigwigs and load them into IGV. 
 Remember to use mm10 genome.  </p>

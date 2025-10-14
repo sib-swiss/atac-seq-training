@@ -922,17 +922,18 @@
 - Maintain BAM file headers during filtering.  </p>
 <div class="admonition info">
 <p class="admonition-title">Code</p>
-<div class="highlight"><pre><span></span><code># create new directory for peaks
-mkdir -p results/01_filtered_bams/NF_bams
+<div class="highlight"><pre><span></span><code><span class="c1"># create new directory for peaks</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>results/01_filtered_bams/NF_bams
 
-# filter for NF fragments only
+<span class="c1"># filter for NF fragments only</span>
 
-for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-    sample_name=$(basename &quot;$bam&quot; .qc_bl_filt.sorted.bam)
-    echo &quot;Processing sample: $sample_name&quot;
-    samtools view -h $bam | awk &#39;substr($0,1,1)==&quot;@&quot; || ($9&gt;= 1 &amp;&amp; $9&lt;=100) || ($9&lt;=-1 &amp;&amp; $9&gt;=-100)&#39; | \
-    samtools view -b &gt; results/01_filtered_bams/NF_bams/${sample_name}_NF.bam 
-done 
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>samtools<span class="w"> </span>view<span class="w"> </span>-h<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.sorted.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;substr($0,1,1)==&quot;@&quot; || ($9&gt;= 1 &amp;&amp; $9&lt;=100) || ($9&lt;=-1 &amp;&amp; $9&gt;=-100)&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>samtools<span class="w"> </span>view<span class="w"> </span>-b<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$path_bams</span>/NF_bams/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF.bam<span class="w"> </span>
+<span class="k">done</span><span class="w"> </span>
 </code></pre></div>
 <p><strong>Parameter explanations</strong>:<br />
 - <code>-h</code>: Keep header in output<br />
@@ -945,13 +946,22 @@ done
 <li>Sort and index the bams files for next step</li>
 <li>Remove the unsorted file</li>
 </ul>
-<div class="highlight"><pre><span></span><code>for bam in results/01_filtered_bams/NF_bams/*_NF.bam; do
-    sample_name=$(basename &quot;$bam&quot; _NF.bam)
-    samtools sort -o results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
-    rm results/01_filtered_bams/NF_bams/${sample_name}_NF.bam
-    samtools index results/01_filtered_bams/NF_bams/${sample_name}_NF.sorted.bam
-done
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>samtools<span class="w"> </span>sort<span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/NF_bams/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF.sorted.bam<span class="w"> </span><span class="nv">$path_bams</span>/NF_bams/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF.bam
+<span class="w">    </span>samtools<span class="w"> </span>index<span class="w"> </span><span class="nv">$path_bams</span>/NF_bams/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF.sorted.bam
+<span class="k">done</span>
 </code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Important before deleting:</strong><br />
+Run this command <em>only</em> if you have named your files exactly as specified in this tutorial and have completed all sorting and indexing steps from the previous command.</p>
+</div>
+<p>Remove intermediate files
+<div class="highlight"><pre><span></span><code>rm<span class="w"> </span>results/01_filtered_bams/NF_bams/*_NF.bam
+</code></pre></div></p>
 <h2 id="2-peak-calling-strategies">2. Peak calling strategies</h2>
 <h3 id="21-macs3-peak-calling">2.1 MACS3 Peak Calling</h3>
 <p>MACS3 is a widely used peak calling tool that can handle both narrow and broad peaks. We&rsquo;ll start using MACS3 function &ldquo;callpeak&rdquo; and compare results using different fragment size filters.</p>
@@ -973,17 +983,15 @@ done
 </details>
 <details class="success">
 <summary>Solution</summary>
-<p><div class="highlight"><pre><span></span><code>mkdir -p results/03_peak_calling/NF_peaks
+<p><div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>results/03_peak_calling/NF_peaks
+<span class="nv">path_peaks</span><span class="o">=</span><span class="s2">&quot;results/03_peak_calling/&quot;</span>
 
-samples=(Kidney_rep1 Kidney_rep2 Cerebrum_rep1 Cerebrum_rep2)
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
 
-# process NF reads
-bams_path=&quot;results/01_filtered_bams/NF_bams&quot;
-
-for sample_name in &quot;${samples[@]}&quot;; do
-    echo &quot;Processing sample: $sample_name&quot;
-    macs3 callpeak -f BAMPE -t $bams_path/${sample_name}_NF.sorted.bam -g mm -q 0.01 --name ${sample_name}_NF --outdir results/03_peak_calling/NF_peaks/NF_peaks_${sample_name}/
-done
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>macs3<span class="w"> </span>callpeak<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-t<span class="w"> </span><span class="nv">$bams_path</span>/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF.sorted.bam<span class="w"> </span>-g<span class="w"> </span>mm<span class="w"> </span>-q<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_NF<span class="w"> </span>--outdir<span class="w"> </span>results/03_peak_calling/NF_peaks/NF_peaks_<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>/
+<span class="k">done</span>
 </code></pre></div>
 parameters explanation:<br />
 <code>-f BAMPE</code>: input file format is BAM paired-end<br />
@@ -1001,13 +1009,14 @@ parameters explanation:<br />
 </ul>
 <details class="success">
 <summary>Solution</summary>
-<div class="highlight"><pre><span></span><code>bams_path=&quot;results/01_filtered_bams/&quot;
-mkdir -p results/03_peak_calling/all_peaks
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>results/03_peak_calling/all_peaks
 
-for sample in &quot;${samples[@]}&quot;; do
-    echo &quot;Processing sample: $sample&quot;
-    macs3 callpeak -f BAMPE -t $bams_path/${sample}.qc_bl_filt.sorted.bam -g mm -q 0.01 --name ${sample}_all --outdir results/03_peak_calling/all_peaks/all_peaks_${sample}/ 2&gt; results/03_peak_calling/all_peaks/${sample}_macs3.log
-done
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>macs3<span class="w"> </span>callpeak<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>-t<span class="w"> </span><span class="nv">$path_bams</span>/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>.qc_bl_filt.sorted.bam<span class="w"> </span>-g<span class="w"> </span>mm<span class="w"> </span>-q<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_all<span class="w"> </span>--outdir<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks/all_peaks_<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>/<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span><span class="nv">$path_peaks</span>/all_peaks/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_macs3.log
+<span class="k">done</span>
 </code></pre></div>
 </details>
 <h3 id="22-hmmratac-peak-calling">2.2 HMMRATAC Peak Calling</h3>
@@ -1022,12 +1031,12 @@ done
 </ul>
 <details class="success">
 <summary>Solution</summary>
-<p><div class="highlight"><pre><span></span><code>mkdir -p results/03_peak_calling/hmmratac_peaks
+<p><div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>results/03_peak_calling/hmmratac_peaks
 
-for sample in &quot;${samples[@]}&quot;; do
-    echo &quot;Processing sample: $sample&quot;
-    macs3 hmmratac -i $bams_path/${sample}.qc_bl_filt.sorted.bam -f BAMPE --name ${sample}_hmmratac --outdir results/03_peak_calling/hmmratac_peaks/hmmratac_peaks_${sample}/
-done
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+<span class="w">    </span>macs3<span class="w"> </span>hmmratac<span class="w"> </span>-i<span class="w"> </span><span class="nv">$path_bams</span>/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>.qc_bl_filt.sorted.bam<span class="w"> </span>-f<span class="w"> </span>BAMPE<span class="w"> </span>--name<span class="w"> </span><span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_hmmratac<span class="w"> </span>--outdir<span class="w"> </span><span class="nv">$path_peaks</span>/hmmratac_peaks/hmmratac_peaks_<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>/
+<span class="k">done</span>
 </code></pre></div>
 Parameters explanation:<br />
 <code>-i</code>: input file (BAM file)<br />

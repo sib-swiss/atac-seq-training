@@ -780,14 +780,15 @@ Ataqv needs a Transcription Start Site (TSS) reference file to compute TSS enric
 </details>
 <details class="success">
 <summary>Solution</summary>
-<p><div class="highlight"><pre><span></span><code>mkdir -p results/02_QC_post_alignment
-TSS_bed=&quot;/data/references/ENCODE_mm10_M21_TSS_reference.bed&quot;
+<p><div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>results/02_QC_post_alignment
+<span class="nv">TSS_bed</span><span class="o">=</span><span class="s2">&quot;/data/references/ENCODE_mm10_M21_TSS_reference.bed&quot;</span>
 
-for bam in results/01_filtered_bams/*qc_bl_filt.sorted.bam; do
-    echo &quot;Processing file: $bam&quot;
-    sample_name=$(basename &quot;$bam&quot; .qc_bl_filt.sorted.bam) 
-    ataqv --name $sample_name --metrics-file results/02_QC_post_alignment/$sample_name.ataqv.json --tss-file $TSS_bed mouse $bam &gt; results/02_QC_post_alignment/$sample_name.ataqv.out
-done
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
+
+<span class="w">    </span><span class="c1"># run command</span>
+<span class="w">    </span>ataqv<span class="w"> </span>--name<span class="w"> </span><span class="nv">$sample_name</span><span class="w"> </span>--metrics-file<span class="w"> </span>results/02_QC_post_alignment/<span class="nv">$sample_name</span>.ataqv.json<span class="w"> </span>--tss-file<span class="w"> </span><span class="nv">$TSS_bed</span><span class="w"> </span>mouse<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.sorted.bam<span class="w"> </span>&gt;<span class="w"> </span>results/02_QC_post_alignment/<span class="nv">$sample_name</span>.ataqv.out
+<span class="k">done</span>
 </code></pre></div>
 <strong>Parameter explanations</strong>:
 - <code>--name</code>: Sample name for output files<br />

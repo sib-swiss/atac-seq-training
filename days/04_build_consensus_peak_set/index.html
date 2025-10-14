@@ -777,12 +777,12 @@ head<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed
 <li>Sort by genomic coordinates</li>
 <li>Merge nearby peaks (within 10bp) to avoid redundancy</li>
 </ul>
-<div class="highlight"><pre><span></span><code># concatenate intersection of both replicates and sort the file
-cat results/04_consensus_peaks/Kidney_intersect.bed results/04_consensus_peaks/Cerebrum_intersect.bed | sort -k1,1 -k2,2n &gt; results/04_consensus_peaks/consensus_peaks_temp.bed
-sort -k1,1 -k2,2n results/04_consensus_peaks/consensus_peaks_temp.bed &gt; results/04_consensus_peaks/consensus_peaks_temp_sorted.bed
+<div class="highlight"><pre><span></span><code><span class="c1"># concatenate intersection of both replicates and sort the file</span>
+cat<span class="w"> </span>results/04_consensus_peaks/Kidney_intersect.bed<span class="w"> </span>results/04_consensus_peaks/Cerebrum_intersect.bed<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-k1,1<span class="w"> </span>-k2,2n<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/consensus_peaks_temp.bed
+sort<span class="w"> </span>-k1,1<span class="w"> </span>-k2,2n<span class="w"> </span>results/04_consensus_peaks/consensus_peaks_temp.bed<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/consensus_peaks_temp_sorted.bed
 
-# Use bedtools merge to merfe peaks at shorter distance than 10bp
-bedtools merge -d 10 -i results/04_consensus_peaks/consensus_peaks_temp.bed &gt; results/04_consensus_peaks/consensus_peaks.bed
+<span class="c1"># Use bedtools merge to merfe peaks at shorter distance than 10bp</span>
+bedtools<span class="w"> </span>merge<span class="w"> </span>-d<span class="w"> </span><span class="m">10</span><span class="w"> </span>-i<span class="w"> </span>results/04_consensus_peaks/consensus_peaks_temp.bed<span class="w"> </span>&gt;<span class="w"> </span>results/04_consensus_peaks/consensus_peaks.bed
 </code></pre></div>
 <p>Add the <code>results/04_consensus_peaks/consensus_peaks.bed</code> track to IGV and have a look to the resulting peak annotation. </p>
 <p><strong>Task 3: Visualize Consensus Peaks</strong></p>
@@ -807,8 +807,8 @@ wc<span class="w"> </span>-l<span class="w"> </span>results/04_consensus_peaks/c
 <span class="c1"># Count peaks in each sample</span>
 <span class="nv">samples</span><span class="o">=(</span>Kidney_rep1<span class="w"> </span>Kidney_rep2<span class="w"> </span>Cerebrum_rep1<span class="w"> </span>Cerebrum_rep2<span class="o">)</span>
 <span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Number of peaks called by MACS3:&quot;</span>
-<span class="k">for</span><span class="w"> </span>sample<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span>wc<span class="w"> </span>-l<span class="w"> </span>results/03_peak_calling/all_peaks/all_peaks_<span class="si">${</span><span class="nv">sample</span><span class="si">}</span>/NA_peaks.narrowPeak
+<span class="k">for</span><span class="w"> </span>sample_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">samples</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>wc<span class="w"> </span>-l<span class="w"> </span>results/03_peak_calling/all_peaks/all_peaks_<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>/<span class="si">${</span><span class="nv">sample_name</span><span class="si">}</span>_all_peaks.narrowPeak
 <span class="k">done</span>
 
 <span class="c1"># Check file format</span>
