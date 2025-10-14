@@ -638,21 +638,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="7. Additional Visualizations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#peak-heatmap" class="md-nav__link">
-    <span class="md-ellipsis">
-      Peak Heatmap
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -757,21 +742,6 @@
       7. Additional Visualizations
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="7. Additional Visualizations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#peak-heatmap" class="md-nav__link">
-    <span class="md-ellipsis">
-      Peak Heatmap
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1029,11 +999,13 @@ cat(&quot;Number of downregulated peaks:&quot;, length(gr_list$down), &quot;\n&q
 - &ldquo;CC&rdquo;: Cellular Component  </p>
 </div>
 <h2 id="7-additional-visualizations">7. Additional Visualizations</h2>
-<h3 id="peak-heatmap">Peak Heatmap</h3>
-<p>Create a heatmap showing peak signal around TSS:</p>
+<p>There are several other plots that ChipSeeker allowes you to do. 
+You can explore a couple of examples related to plotting the profile of peaks around certain regions</p>
+<p><strong>Task 9: Peak Heatmap</strong></p>
+<ul>
+<li>Create a heatmap showing peak signal around TSS:  </li>
+</ul>
 <div class="highlight"><pre><span></span><code><span class="c1"># Generate peak heatmap around gene bodies</span>
-
-
 <span class="nf">peakHeatmap</span><span class="p">(</span><span class="n">peak</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gr</span><span class="p">,</span>
 <span class="w">            </span><span class="n">TxDb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TxDb</span><span class="p">,</span>
 <span class="w">            </span><span class="n">upstream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span>
@@ -1041,17 +1013,22 @@ cat(&quot;Number of downregulated peaks:&quot;, length(gr_list$down), &quot;\n&q
 <span class="w">            </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;gene&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;start_site&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="n">nbin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">800</span><span class="p">)</span>
-
-
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Bonus Task</p>
+<p>Now let&rsquo;s plot the profile of peak counts around annotated TSS split by conditions</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get TSS (promoter) annotation for mouse mm10</span>
 <span class="n">promoter</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">getPromoters</span><span class="p">(</span><span class="n">TxDb</span><span class="o">=</span><span class="n">TxDb</span><span class="p">,</span><span class="w"> </span><span class="n">upstream</span><span class="o">=</span><span class="m">1000</span><span class="p">,</span><span class="w"> </span><span class="n">downstream</span><span class="o">=</span><span class="m">1000</span><span class="p">)</span>
 
+<span class="c1"># Build a matrix of peaks per conditions, and combine them in a list</span>
 <span class="n">tagMatrix_Cer</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">getTagMatrix</span><span class="p">(</span><span class="n">gr_list</span><span class="o">$</span><span class="n">down</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">windows</span><span class="o">=</span><span class="n">promoter</span><span class="p">)</span>
 <span class="n">tagMatrix_Kid</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">getTagMatrix</span><span class="p">(</span><span class="n">gr_list</span><span class="o">$</span><span class="n">up</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">windows</span><span class="o">=</span><span class="n">promoter</span><span class="p">)</span>
 <span class="n">tagMatrixList</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">Cerebrum</span><span class="o">=</span><span class="n">agMatrix_Cer</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">Kidney</span><span class="o">=</span><span class="n">tagMatrix_Kid</span><span class="w"> </span><span class="p">)</span>
 
+<span class="c1"># plot </span>
 <span class="nf">plotAvgProf</span><span class="p">(</span><span class="n">tagMatrixList</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">-1000</span><span class="p">,</span><span class="w"> </span><span class="m">1000</span><span class="p">),</span><span class="w"> </span><span class="n">conf</span><span class="o">=</span><span class="m">0.95</span><span class="p">,</span><span class="n">resample</span><span class="o">=</span><span class="m">500</span><span class="p">,</span><span class="w"> </span><span class="n">facet</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="p">)</span>
-<span class="nf">plotAvgProf</span><span class="p">(</span><span class="n">tagMatrixList</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">-1000</span><span class="p">,</span><span class="w"> </span><span class="m">1000</span><span class="p">))</span>
 </code></pre></div>
+</div>
 
 
 

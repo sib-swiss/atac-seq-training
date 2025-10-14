@@ -851,8 +851,8 @@
 </code></pre></div>
 <p>Optional: (Remove peaks with insufficient read counts)</p>
 <div class="highlight"><pre><span></span><code><span class="n">idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rowSums</span><span class="p">(</span><span class="nf">counts</span><span class="p">(</span><span class="n">dds</span><span class="p">,</span><span class="w"> </span><span class="n">normalized</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">30</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">2</span>
-<span class="n">dds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dds</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
-<span class="nf">dim</span><span class="p">(</span><span class="n">dds</span><span class="p">)</span>
+<span class="n">dds.f</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dds</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">dds.f</span><span class="p">)</span>
 </code></pre></div>
 <p>Perform the estimation of dispersions</p>
 <div class="highlight"><pre><span></span><code><span class="n">dds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">DESeq</span><span class="p">(</span><span class="n">dds</span><span class="p">)</span>
@@ -937,7 +937,13 @@ To this object <code>peaks_gr</code>, you will add other metadata along the down
 <p>Save the object
 <div class="highlight"><pre><span></span><code><span class="nf">saveRDS</span><span class="p">(</span><span class="n">peaks_gr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;results/06_DA_analysis/DA_results.RDS&quot;</span><span class="p">)</span>
 </code></pre></div></p>
+<p>And clean the environment</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must save the objects before running the following code. After running it your variables and objects will be removed.</p>
+</div>
 <div class="highlight"><pre><span></span><code><span class="nf">rm</span><span class="p">(</span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ls</span><span class="p">())</span>
+<span class="nf">.rs.restartR</span><span class="p">()</span>
 </code></pre></div>
 
 
