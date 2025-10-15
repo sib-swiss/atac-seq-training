@@ -977,7 +977,7 @@ A tool that allows you to do this conversion is <a href="https://deeptools.readt
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing sample: </span><span class="nv">$sample_name</span><span class="s2">&quot;</span>
 
 <span class="w">    </span><span class="c1">#run command</span>
-<span class="w">    </span>bamCoverage<span class="w"> </span>-b<span class="w"> </span><span class="nv">$bam</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/filt_bigwigs/<span class="nv">$sample_name</span>.bw<span class="w"> </span>--region<span class="w"> </span><span class="m">6</span>:1500000:20000000<span class="w"> </span>--normalizeUsing<span class="w"> </span>CPM
+<span class="w">    </span>bamCoverage<span class="w"> </span>-b<span class="w"> </span><span class="nv">$path_bams</span>/<span class="nv">$sample_name</span>.qc_bl_filt.sorted.bam<span class="w"> </span>-o<span class="w"> </span><span class="nv">$path_bams</span>/filt_bigwigs/<span class="nv">$sample_name</span>.bw<span class="w"> </span>--region<span class="w"> </span><span class="m">6</span>:1500000:20000000<span class="w"> </span>--normalizeUsing<span class="w"> </span>CPM
 <span class="k">done</span>
 </code></pre></div>
 <p>Download the .bigwigs and load them into IGV. 
