@@ -259,7 +259,7 @@ rm results/01_filtered_bams/*qc_bl_filt.bam
         echo "Processing sample: $sample_name"
         
         #run command
-        bamCoverage -b $bam -o $path_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
+        bamCoverage -b $path_bams/$sample_name.qc_bl_filt.sorted.bam -o $path_bams/filt_bigwigs/$sample_name.bw --region 6:1500000:20000000 --normalizeUsing CPM
     done
     ```
 
