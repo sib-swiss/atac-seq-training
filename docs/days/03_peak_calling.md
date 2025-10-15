@@ -125,7 +125,7 @@ We will first call peaks using MACS3 on NF reads only, focusing on fragments mos
         echo "Processing sample: $sample_name"
         
         # run command
-        macs3 callpeak -f BAMPE -t $bams_path/${sample_name}_NF.sorted.bam -g mm -q 0.01 --name ${sample_name}_NF --outdir results/03_peak_calling/NF_peaks/NF_peaks_${sample_name}/
+        macs3 callpeak -f BAMPE -t $path_bams/NF_bams/${sample_name}_NF.sorted.bam -g mm -q 0.01 --name ${sample_name}_NF --outdir results/03_peak_calling/NF_peaks/NF_peaks_${sample_name}/
     done
     ```
     parameters explanation:  
