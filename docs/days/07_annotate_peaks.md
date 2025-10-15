@@ -300,7 +300,7 @@ peakHeatmap(peak = gr,
     # Build a matrix of peaks per conditions, and combine them in a list
     tagMatrix_Cer <- getTagMatrix(gr_list$down , windows=promoter)
     tagMatrix_Kid <- getTagMatrix(gr_list$up , windows=promoter)
-    tagMatrixList <- list(Cerebrum=agMatrix_Cer , Kidney=tagMatrix_Kid )
+    tagMatrixList <- list(Cerebrum=tagMatrix_Cer , Kidney=tagMatrix_Kid )
 
     # plot 
     plotAvgProf(tagMatrixList, xlim=c(-1000, 1000), conf=0.95,resample=500, facet="row")
