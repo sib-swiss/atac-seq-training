@@ -103,6 +103,8 @@ dds <- DESeq(dds)
 
 And plot PCA of the samples
 ```r
+# we apply the variance stabilising transformation (vst) to make the read counts comparable across libraries
+# (nb : this is not needed for DESeq DE analysis, but rather for visualisations that compare expression across samples, such as PCA. This replaces normal PCA scaling)
 vsd <- varianceStabilizingTransformation(dds, blind=TRUE )
 pcaData <- plotPCA(vsd, intgroup=c("condition"), ntop="all")
 pcaData + geom_label(aes(x=PC1,y=PC2,label=name))
